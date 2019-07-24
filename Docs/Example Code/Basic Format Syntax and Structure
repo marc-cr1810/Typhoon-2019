@@ -1,0 +1,6 @@
+func Multiply(a, b):
+    return a * b
+
+func main():
+    var a = Multiply(2, 3)
+    print(a)
