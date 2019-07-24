@@ -1,6 +1,7 @@
 func Multiply(a, b):
     return a * b
 
+# the main function is required to know where the startpoint of the program is
 func main():
     var a = Multiply(2, 3)
     print(a)

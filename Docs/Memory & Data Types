@@ -1,0 +1,9 @@
+Memory will consist of Typhoon Objects
+Every data type will be a TyObject
+
+The different Typhoon data types are:
+    Int
+    Float
+    String
+    Bool
+    List
