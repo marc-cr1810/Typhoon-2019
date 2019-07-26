@@ -6,6 +6,7 @@
 enum TokenType 
 {
     UNNOWN = -1,
+    END,
     VARIABLE,
 	ID,
     NUMBER,

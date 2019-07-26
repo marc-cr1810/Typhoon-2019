@@ -1,8 +1,15 @@
-var msg = "Hello World"
+#           helloworld.ty
+# This file is just used to test basic 
+# functions of the programming language
+# and to begin its development in its
+# early stages.
 
+var msg = "Hello World" # Stores a string containing the text "Hello World"
+
+# Store some numbers in variables
 var a = 2
 var b = 3
 var c = a + b
 
-var f = 1.5
-var check = a > b == true
+var f = 1.5 # Floats
+var check = a > b == true # Boolean testing

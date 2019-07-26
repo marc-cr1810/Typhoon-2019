@@ -61,9 +61,16 @@ void Lexer::TokenizeFile(File file)
 		if (byte != '\n' && byte != '\r')
 			tokenValue += byte;
 
-		if (i == file.GetBytes().size() - 1 || byte == '\n')
+		if (i == file.GetBytes().size() - 1 || byte == m_EndLineChar)
 		{
-			AddToken(tokenValue);
+			if (!std::regex_match(tokenValue, std::regex(m_Comment)))
+				AddToken(tokenValue);
+			
+			if (m_Tokens.size() > 0)
+			{
+				if (m_Tokens[m_Tokens.size() - 1].Type != TokenType::END)
+					AddToken(std::string(1, m_EndLineChar));
+			}
 			tokenValue = "";
 		}
 
