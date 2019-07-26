@@ -10,6 +10,7 @@ int main()
 
 	Lexer lexer;
 	lexer.TokenizeFile(programFile);
+
 	for (Token token : lexer.GetTokens())
 		std::cout << "Type: " << token.Type << " Value: " + token.Value << std::endl;
 

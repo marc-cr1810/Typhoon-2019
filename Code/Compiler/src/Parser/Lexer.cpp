@@ -1,7 +1,5 @@
 #include "Lexer.h"
 
-#include <iostream>
-
 Lexer::Lexer()
 { }
 
@@ -9,34 +7,50 @@ void Lexer::TokenizeFile(File file)
 {
     Ty_string_t tokenValue = "";
     
-    for (unsigned int i = 0; i < file.GetBytes().size(); i++)
+    for (Ty_uint32_t i = 0; i < file.GetBytes().size(); i++)
     {
         char byte = file.GetBytes()[i];
-        for (char seperator : m_SeperatorChars)
+        for (char separator : m_SeparatorChars)
         {
-            std::cout << byte << std::endl;
-            if (byte == seperator)
+            if (byte == separator)
             {
-                AddToken(tokenValue);
-                tokenValue = "";
-                goto NextByte;
+				for (Ty_string_t rule : m_SeparatorExclusionRules)
+				{
+					if (std::regex_match(tokenValue, std::regex(rule)))
+						goto SkipSeparator;
+				}
+				AddToken(tokenValue);
+				tokenValue = "";
+				goto NextByte;
             }
         }
-        tokenValue += byte;
+	SkipSeparator:
 
-        NextByte: ;
+		if (byte != '\n' && byte != '\r')
+			tokenValue += byte;
+
+		if (i == file.GetBytes().size() - 1 || byte == '\n')
+		{
+			AddToken(tokenValue);
+			tokenValue = "";
+		}
+
+    NextByte: ;
     }
 }
 
-void Lexer::AddToken(Ty_string_t value) 
+void Lexer::AddToken(Ty_string_t value)
 {
-    for (Token type : m_TokenTypes)
-    {
-        if (std::regex_match(value, std::regex(type.Value)))
-        {
-            m_Tokens.push_back({ type.Type, value });
-            return;
-        }
-    }
-    m_Tokens.push_back({ TokenType::UNNOWN, value });
+	if (value != "")
+	{
+		for (Token type : m_TokenTypes)
+		{
+			if (std::regex_match(value, std::regex(type.Value)))
+			{
+				m_Tokens.push_back({ type.Type, value });
+				return;
+			}
+		}
+		m_Tokens.push_back({ TokenType::UNNOWN, value });
+	}
 }

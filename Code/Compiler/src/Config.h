@@ -5,13 +5,6 @@
 #	define _CRT_SECURE_NO_DEPRECATE 1
 #endif
 
-#define MS_WINDOWS
-#define MS_WIN32			// Support for win32 and greater
-
-#ifdef _WIN64
-#	define MS_WIN64
-#endif
-
 #ifdef _DEBUG
 #	define Ty_DEBUG
 #elif defined(DEBUG)
@@ -28,9 +21,17 @@
 #ifdef _MSC_VER
 /* Microsoft Visual Studio C++ Compiler Information */
 
+#define MS_WINDOWS
+#define MS_WIN32			// Support for win32 and greater
+
+#ifdef _WIN64
+#	define MS_WIN64
+#endif
+
 #define _Ty_COMPILER_PASTE_VERSION(suffix) ("[MSC v." _Ty_STRINGIZE(_MSC_VER) " " suffix "]")
 
 #ifdef MS_WIN64
+
 #	if defined(_M_IA64)
 #		define COMPILER _Ty_COMPILER_PASTE_VERSION("64 bit (Itanium)")
 #		define MS_WINI64

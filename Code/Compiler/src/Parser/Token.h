@@ -7,7 +7,11 @@ enum TokenType
 {
     UNNOWN = -1,
     VARIABLE,
-    NUMBER
+	ID,
+    NUMBER,
+	FLOAT,
+	STRING,
+	OPERATOR
 };
 
 struct Token

@@ -1,1 +1,7 @@
+var msg = "Hello World"
+
 var a = 2
+var b = 3
+var c = a + b
+
+var f = 1.5
