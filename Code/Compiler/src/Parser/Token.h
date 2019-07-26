@@ -11,6 +11,7 @@ enum TokenType
     NUMBER,
 	FLOAT,
 	STRING,
+	BOOL,
 	OPERATOR
 };
 
