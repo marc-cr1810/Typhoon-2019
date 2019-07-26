@@ -8,6 +8,7 @@ FILE=$4
 echo -e "\e[32m------ Build Started: Project \"$PROJECT_NAME\" : $BUILD_TYPE ------\e[0m"
 
 OUTPUT_DIR="$WORKSPACE/../bin/$BUILD_TYPE-Linux-x86/Compiler/"
+CPP_FILES=$(find -regex '.*/.*\.\(cpp\)$')
 
 if [ ! -d "$OUTPUT_DIR" ]; then
     echo "Creating build output directory..."
@@ -16,9 +17,9 @@ fi
 
 if [ -d "$OUTPUT_DIR" ]; then
     if [ $BUILD_TYPE == "Debug" ]; then
-        /usr/bin/clang++ -g "$FILE" -O0 -o "$OUTPUT_DIR$PROJECT_NAME"
+        g++ -o "$OUTPUT_DIR$PROJECT_NAME" $CPP_FILES -I . -Wall
     else
-        /usr/bin/clang++ -g "$FILE" -O2 -o "$OUTPUT_DIR$PROJECT_NAME"
+        g++ -o "$OUTPUT_DIR$PROJECT_NAME" $CPP_FILES -I .
     fi
     echo "$PROJECT_NAME -> $OUTPUT_DIR$PROJECT_NAME"
 else
