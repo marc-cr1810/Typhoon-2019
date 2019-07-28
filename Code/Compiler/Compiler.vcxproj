@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Config.h" />
+    <ClInclude Include="src\Parser\AST.h" />
     <ClInclude Include="src\Parser\Grammar.h" />
     <ClInclude Include="src\Parser\Lexer.h" />
     <ClInclude Include="src\Parser\Parser.h" />

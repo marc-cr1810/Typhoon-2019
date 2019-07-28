@@ -61,8 +61,6 @@ static std::vector<Ty_string_t> GetGrammarKeywordList(Grammar grammar)
 	return result;
 }
 
-#include <iostream>
-
 static Grammar MatchGrammar(std::vector<Token> tokens)
 {
 	for (Grammar grammar : GrammarFormats)
@@ -76,7 +74,6 @@ static Grammar MatchGrammar(std::vector<Token> tokens)
 			{
 				if (m[1] == tokens[i].Value)
 				{
-					std::cout << keyword << ", ";
 					i++;
 					continue;
 				}
@@ -84,26 +81,39 @@ static Grammar MatchGrammar(std::vector<Token> tokens)
 			}
 			else
 			{
-				std::cout << keyword << ", ";
 				if (keyword == "NAME")
-					i++;
+				{
+					if (tokens[i].Type == TokenType::NAME)
+						i++;
+					else goto NextFormat;
+				}
 				else if (keyword == "EXPR")
 				{
 					bool isExpression = false;
-					for (Ty_int32_t exprTokenType : ExpressionTokenTypes)
+					while (i < tokens.size() - 1)
 					{
-						if (tokens[i].Type == exprTokenType)
+						for (Ty_int32_t exprTokenType : ExpressionTokenTypes)
 						{
-							isExpression = true;
-							i++;
+							if (exprTokenType == tokens[i].Type)
+							{
+								isExpression = true;
+								i++;
+								goto NextExprToken;
+							}
 						}
-						else break;
+						if (!isExpression)
+							goto NextFormat;
+						else
+							goto NextKeyword;
+					NextExprToken: ;
 					}
-					if (!isExpression)
-						goto NextFormat;
 				}
 			}
+		NextKeyword: ;
 		}
+
+		if (tokens[i].Type == TokenType::END)
+			return { grammar.Type, grammar.Format };
 	NextFormat: ;
 	}
 	return { GrammarType::UNKNOWN_GRAMMAR, "" };

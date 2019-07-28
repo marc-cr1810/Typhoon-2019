@@ -33,7 +33,7 @@ const OperatorToken OperatorTokenTypes[16] = {
 	{ TokenType::OPERATOR, "^<=$", OperatorType::LESS_THAN_EQUAL_TO },		// Less than or equal to
 	{ TokenType::OPERATOR, "^\\($", OperatorType::LEFT_BRACKET },			// Left bracket
 	{ TokenType::OPERATOR, "^\\)$", OperatorType::RIGHT_BRACKET },			// Right bracket
-	{ TokenType::OPERATOR, "^:$", OperatorType::SEMICOLON }					// Semicolon
+	{ TokenType::OPERATOR_SPECIAL, "^:$", OperatorType::SEMICOLON }			// Semicolon
 };
 
 #endif

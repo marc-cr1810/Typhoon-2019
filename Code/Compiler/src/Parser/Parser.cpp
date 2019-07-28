@@ -13,12 +13,13 @@ void Parser::Parse(Lexer* lexer)
 		int j = 0;
 		while (lexer->GetTokens()[i + j].Type != TokenType::END)
 		{
-			tokens.push_back(lexer->GetTokens()[i + j]);
+			if (!lexer->GetTokens()[i + j].Type == TokenType::START)
+				tokens.push_back(lexer->GetTokens()[i + j]);
 			i++;
 		}
 		tokens.push_back(lexer->GetTokens()[i + j]);
 		Grammar grammar = MatchGrammar(tokens);
-		std::cout << std::endl;
+		std::cout << grammar.Format << std::endl;
 
 	}
 }

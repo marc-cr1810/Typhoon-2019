@@ -14,6 +14,7 @@ enum TokenType
 	STRING,
 	BOOL,
 	OPERATOR,
+	OPERATOR_SPECIAL,
 	STATEMENT
 };
 

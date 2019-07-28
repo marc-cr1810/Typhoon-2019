@@ -4,6 +4,7 @@
 #include "../Port.h"
 #include "Lexer.h"
 #include "Grammar.h"
+#include "AST.h"
 
 class Parser
 {
