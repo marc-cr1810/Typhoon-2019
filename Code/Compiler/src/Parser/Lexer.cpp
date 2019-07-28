@@ -1,7 +1,5 @@
 #include "Lexer.h"
 
-#include <iostream>
-
 Lexer::Lexer()
 { }
 
@@ -29,7 +27,7 @@ void Lexer::TokenizeFile(File file)
             }
         }
 
-		for (Token op : m_OperatorTokenTypes)
+		for (OperatorToken op : OperatorTokenTypes)
 		{
 			if (std::regex_match(std::string(1, byte), std::regex(op.Value)))
 			{
@@ -37,17 +35,23 @@ void Lexer::TokenizeFile(File file)
 				tokenValue = byte;
 				while (i < file.GetBytes().size())
 				{
-					for (Token _op : m_OperatorTokenTypes)
+					if (i + 1 == file.GetBytes().size())
+						break;
+					std::string s = tokenValue;
+					s += file.GetBytes()[i + 1];
+					for (OperatorToken _op : OperatorTokenTypes)
 					{
-						if (i + 1 == file.GetBytes().size())
-							break;
-						std::string s = tokenValue;
-						s += file.GetBytes()[i + 1];
 						if (std::regex_match(s, std::regex(_op.Value)))
 						{
 							tokenValue += file.GetBytes()[++i];
 							goto CheckNextByte;
 						}
+					}
+
+					for (Ty_string_t rule : m_OperatorExclusionRules)
+					{
+						if (std::regex_match(s, std::regex(rule)))
+							goto SkipOperator;
 					}
 					AddToken(tokenValue);
 					tokenValue = "";
@@ -56,11 +60,12 @@ void Lexer::TokenizeFile(File file)
 				}
 			}
 		}
-	SkipSeparator:
 
+	SkipSeparator:
 		if (byte != '\n' && byte != '\r')
 			tokenValue += byte;
 
+	SkipOperator:
 		if (i == file.GetBytes().size() - 1 || byte == m_EndLineChar)
 		{
 			if (!std::regex_match(tokenValue, std::regex(m_Comment)))
@@ -82,19 +87,19 @@ void Lexer::AddToken(Ty_string_t value)
 {
 	if (value != "")
 	{
-		for (Token type : m_TokenTypes)
-		{
-			if (std::regex_match(value, std::regex(type.Value)))
-			{
-				m_Tokens.push_back({ type.Type, value });
-				return;
-			}
-		}
-		for (Token opType : m_OperatorTokenTypes)
+		for (OperatorToken opType : OperatorTokenTypes)
 		{
 			if (std::regex_match(value, std::regex(opType.Value)))
 			{
 				m_Tokens.push_back({ opType.Type, value });
+				return;
+			}
+		}
+		for (Token type : TokenTypes)
+		{
+			if (std::regex_match(value, std::regex(type.Value)))
+			{
+				m_Tokens.push_back({ type.Type, value });
 				return;
 			}
 		}

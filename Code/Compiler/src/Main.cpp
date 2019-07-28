@@ -2,6 +2,7 @@
 #include "Typhoon.h"
 
 #include "Parser/Lexer.h"
+#include "Parser/Parser.h"
 
 int main()
 {
@@ -11,8 +12,8 @@ int main()
 	Lexer lexer;
 	lexer.TokenizeFile(programFile);
 
-	for (Token token : lexer.GetTokens())
-		std::cout << "Type: " << token.Type << " Value: " + token.Value << std::endl;
+	Parser parser;
+	parser.Parse(&lexer);
 
 	std::cout << "Finished Compiling Program" << std::endl;
 }

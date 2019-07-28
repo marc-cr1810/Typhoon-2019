@@ -132,12 +132,16 @@
   <ItemGroup>
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Parser\Lexer.cpp" />
+    <ClCompile Include="src\Parser\Parser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Config.h" />
+    <ClInclude Include="src\Parser\Grammar.h" />
     <ClInclude Include="src\Parser\Lexer.h" />
+    <ClInclude Include="src\Parser\Parser.h" />
     <ClInclude Include="src\Parser\Token.h" />
     <ClInclude Include="src\Port.h" />
+    <ClInclude Include="src\Parser\Tokens.h" />
     <ClInclude Include="src\Typhoon.h" />
     <ClInclude Include="src\Utils\File.h" />
   </ItemGroup>

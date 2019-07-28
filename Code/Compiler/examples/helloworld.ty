@@ -4,12 +4,10 @@
 # and to begin its development in its
 # early stages.
 
-var msg = "Hello World" # Stores a string containing the text "Hello World"
+var a = 3
+var b = -1
 
-# Store some numbers in variables
-var a = 2
-var b = 3
-var c = a + b
-
-var f = 1.5 # Floats
-var check = a > b == true # Boolean testing
+if a > 3:
+	b = 1
+else
+	b = 0
