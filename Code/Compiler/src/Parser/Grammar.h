@@ -30,6 +30,15 @@ struct Grammar
 	{}
 };
 
+const Ty_int32_t ExpressionTokenTypes[6] = {
+	TokenType::NAME, 
+	TokenType::NUMBER, 
+	TokenType::FLOAT, 
+	TokenType::STRING, 
+	TokenType::BOOL,
+	TokenType::OPERATOR
+ };
+
 const Grammar GrammarFormats[4] = {
 	{ GrammarType::CREATE_VAR, "'var' NAME '=' EXPR" },
 	{ GrammarType::SET_VAR, "NAME '=' EXPR" },
@@ -67,7 +76,7 @@ static Grammar MatchGrammar(std::vector<Token> tokens)
 			{
 				if (m[1] == tokens[i].Value)
 				{
-					std::cout << keyword << std::endl;
+					std::cout << keyword << ", ";
 					i++;
 					continue;
 				}
@@ -75,7 +84,24 @@ static Grammar MatchGrammar(std::vector<Token> tokens)
 			}
 			else
 			{
-				i++;
+				std::cout << keyword << ", ";
+				if (keyword == "NAME")
+					i++;
+				else if (keyword == "EXPR")
+				{
+					bool isExpression = false;
+					for (Ty_int32_t exprTokenType : ExpressionTokenTypes)
+					{
+						if (tokens[i].Type == exprTokenType)
+						{
+							isExpression = true;
+							i++;
+						}
+						else break;
+					}
+					if (!isExpression)
+						goto NextFormat;
+				}
 			}
 		}
 	NextFormat: ;
