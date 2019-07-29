@@ -13,6 +13,8 @@ public:
 	
 	void Parse(Lexer *lexer);
 private:
+	Expression ExpressionTokensToAST(std::vector<Token> tokens, Node* parent);
+
 	AST ProgramAST;
 };
 

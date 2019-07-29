@@ -38,6 +38,24 @@ enum OperatorType
 	SEMICOLON
 };
 
+enum OperatorCategory
+{
+	CATEGORY_UNKNOWN = -1,
+	ASSIGNMENT,
+	CONDITIONAL,
+	LOGICAL_OR,
+	LOGICAL_AND,
+	BITWISE_OR,
+	BITWISE_AND,
+	EQUALITY,
+	RELATIONAL,
+	SHIFT,
+	ADDITIVE,
+	MULTIPLICATIVE,
+	UNARY,
+	POSTFIX
+};
+
 struct Token
 {
     TokenType Type;
@@ -53,9 +71,10 @@ struct OperatorToken
 	TokenType Type;
 	Ty_string_t Value;
 	OperatorType OpType;
+	OperatorCategory Category;
 
-	OperatorToken(TokenType type, Ty_string_t value, OperatorType opType)
-		: Type(type), Value(value), OpType(opType)
+	OperatorToken(TokenType type, Ty_string_t value, OperatorType opType, OperatorCategory category)
+		: Type(type), Value(value), OpType(opType), Category(category)
 	{}
 };
 

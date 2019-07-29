@@ -10,7 +10,7 @@ void Parser::Parse(Lexer* lexer)
 	for (Ty_uint32_t i = 0; i < lexer->GetTokens().size(); i++)
 	{
 		std::vector<Token> tokens;
-		int j = 0;
+		Ty_uint32_t j = 0;
 		while (lexer->GetTokens()[i + j].Type != TokenType::END)
 		{
 			if (!lexer->GetTokens()[i + j].Type == TokenType::START)
@@ -24,9 +24,8 @@ void Parser::Parse(Lexer* lexer)
 		switch (grammar.Type)
 		{
 		case GrammarType::CREATE_VAR:
-			Statement stmt(Statement::StatementType::ASSIGN, &ProgramAST.Program); ProgramAST.Program.Add(stmt);
-			TyObject varName(&stmt); stmt.Add(&varName);
-			Expression expr(&stmt); stmt.Add(&expr);
+			Statement stmt(Statement::StatementType::ASSIGN, &ProgramAST.Program);
+			TyObject varName(&stmt);
 
 			std::vector<Ty_string_t> keywords = GetGrammarKeywordList(grammar);
 			for (Ty_string_t keyword : keywords)
@@ -46,7 +45,7 @@ void Parser::Parse(Lexer* lexer)
 					{
 						if (tokens[i].Type == TokenType::NAME)
 						{
-							varName.Type = TyObject::ObjectType::NAME;
+							varName.ObjType = TyObject::ObjectType::NAME;
 							varName.Value = tokens[i].Value;
 							i++;
 							continue;
@@ -54,14 +53,72 @@ void Parser::Parse(Lexer* lexer)
 					}
 					else if (keyword == "EXPR")
 					{
+						std::vector<Token> exprTokens;
 						while (lexer->GetTokens()[i].Type != TokenType::END)
 						{
+							exprTokens.push_back(lexer->GetTokens()[i]);
 							i++;
 						}
+						Expression expr = ExpressionTokensToAST(exprTokens, &ProgramAST.Program);
 					}
 				}
 			}
 			break;
 		}
 	}
+}
+
+Expression Parser::ExpressionTokensToAST(std::vector<Token> tokens, Node* parent)
+{
+	std::stack<Token> stack;
+	std::stack<Token> outputStack;
+
+	for (Token token : tokens)
+	{
+		if (token.Type == TokenType::OPERATOR)
+		{
+			OperatorToken opToken = TokenToOperatorToken(token);
+			if (opToken.OpType == OperatorType::LEFT_BRACKET)
+				stack.push(token);
+			else if (opToken.OpType == OperatorType::RIGHT_BRACKET)
+			{
+				while (stack.size() > 0)
+				{
+					if (stack.top().Type == TokenType::OPERATOR)
+					{
+						if (TokenToOperatorToken(stack.top()).OpType == OperatorType::LEFT_BRACKET)
+							break;
+						outputStack.push(stack.top());
+						stack.pop();
+					}
+				}
+				stack.pop();
+			}
+			else
+			{
+				while (stack.size() > 0)
+				{
+					if (stack.top().Type == TokenType::OPERATOR)
+					{
+						if (TokenToOperatorToken(stack.top()).Category < opToken.Category || TokenToOperatorToken(stack.top()).OpType == OperatorType::LEFT_BRACKET)
+							break;
+						outputStack.push(stack.top());
+						stack.pop();
+					}
+					else
+						outputStack.push(token);
+				}
+				stack.push(token);
+			}
+		}
+		else
+			outputStack.push(token);
+	}
+	while (stack.size() > 0)
+	{
+		outputStack.push(stack.top());
+		stack.pop();
+	}
+
+	return Expression(parent);
 }

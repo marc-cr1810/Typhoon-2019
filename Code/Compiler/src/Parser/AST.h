@@ -4,73 +4,22 @@
 #include "../Port.h"
 #include "Token.h"
 
+enum NodeType
+{
+	UNKNOWN_NODE = -1,
+	NODE,
+	NODE_BLOCK,
+	NODE_STATEMENT,
+	NODE_EXPRESSION,
+	NODE_OBJECT
+};
+
 struct Node
 {
 	Node* Parent;
+	std::vector<Node*> Nodes;
+	NodeType Type = NodeType::NODE;
 
-	Node(Node* parent)
-		: Parent(parent)
-	{}
-
-	virtual void Add(Node node) 
-	{}
-};
-
-struct Block : Node
-{
-	std::vector<Node> Nodes;
-
-	Block(Node* parent) : Node(parent)
-	{}
-
-	Block(Node* parent, std::vector<Node> nodes) 
-		: Node(parent), Nodes(nodes)
-	{}
-
-	void Add(Node node) override
-	{
-		Nodes.push_back(node);
-	}
-};
-
-struct Statement : Node
-{
-	enum StatementType
-	{
-		UNKNOWN_STATEMENT = -1,
-		ASSIGN,
-		IF
-	};
-
-	StatementType Type;
-	std::vector<Node> Nodes;
-
-	Statement(StatementType type, Node* parent)
-		: Node(parent), Type(type)
-	{}
-
-	Statement(StatementType type, Node* parent, std::vector<Node> nodes)
-		: Node(parent), Type(type), Nodes(nodes)
-	{}
-};
-
-struct Expression : Node
-{
-	Node* Left;
-	Node* Right;
-	OperatorType OpType;
-
-	Expression(Node* parent)
-		: Node(parent)
-	{}
-
-	Expression(Node* parent, OperatorType opType, Node* left, Node* right)
-		: Node(parent), OpType(opType), Left(left), Right(right)
-	{}
-};
-
-struct TyObject : Node
-{
 	enum ObjectType
 	{
 		NAME,
@@ -80,16 +29,69 @@ struct TyObject : Node
 		BOOL
 	};
 
-	ObjectType Type;
+	enum StatementType
+	{
+		UNKNOWN_STATEMENT = -1,
+		ASSIGN,
+		IF
+	};
+
+	StatementType StmtType;
+
+	Node* Left;
+	Node* Right;
+	OperatorType OpType;
+
+	ObjectType ObjType;
 	Ty_string_t Value;
 
+	Node(Node* parent)
+		: Parent(parent)
+	{
+		if (parent != nullptr)
+			parent->Add(this);
+	}
+
+	virtual void Add(Node* node)
+	{
+		Nodes.push_back(node);
+	}
+};
+
+struct Block : Node
+{
+	Block(Node* parent) : Node(parent)
+	{
+		Type = NodeType::NODE_BLOCK;
+	}
+};
+
+struct Statement : Node
+{
+	Statement(StatementType type, Node* parent)
+		: Node(parent)
+	{
+		Type = NodeType::NODE_STATEMENT;
+		StmtType = type;
+	}
+};
+
+struct Expression : Node
+{
+	Expression(Node* parent)
+		: Node(parent)
+	{
+		Type = NodeType::NODE_EXPRESSION;
+	}
+};
+
+struct TyObject : Node
+{
 	TyObject(Node* parent)
 		: Node(parent)
-	{}
-
-	TyObject(Node* parent, ObjectType type)
-		: Node(parent), Type(type)
-	{}
+	{
+		Type = NodeType::NODE_OBJECT;
+	}
 };
 
 struct AST
