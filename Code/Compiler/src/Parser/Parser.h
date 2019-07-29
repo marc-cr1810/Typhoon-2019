@@ -13,7 +13,7 @@ public:
 	
 	void Parse(Lexer *lexer);
 private:
-
+	AST ProgramAST;
 };
 
 #endif
