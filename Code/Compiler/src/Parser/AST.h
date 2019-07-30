@@ -14,48 +14,60 @@ enum NodeType
 	NODE_OBJECT
 };
 
+enum ObjectType
+{
+	OBJ_NAME = TokenType::NAME,
+	OBJ_NUMBER = TokenType::NUMBER,
+	OBJ_FLOAT = TokenType::FLOAT,
+	OBJ_STRING = TokenType::STRING,
+	OBJ_BOOL = TokenType::BOOL
+};
+
+enum StatementType
+{
+	UNKNOWN_STATEMENT = -1,
+	ASSIGN,
+	IF
+};
+
+struct NodeData;
+
 struct Node
 {
-	Node* Parent;
-	std::vector<Node*> Nodes;
 	NodeType Type = NodeType::NODE;
-
-	enum ObjectType
-	{
-		NAME,
-		NUMBER,
-		FLOAT,
-		STRING,
-		BOOL
-	};
-
-	enum StatementType
-	{
-		UNKNOWN_STATEMENT = -1,
-		ASSIGN,
-		IF
-	};
-
-	StatementType StmtType;
-
-	Node* Left;
-	Node* Right;
-	OperatorType OpType;
-
-	ObjectType ObjType;
-	Ty_string_t Value;
+	struct NodeData *Data;
 
 	Node(Node* parent)
-		: Parent(parent)
 	{
+		Data = new NodeData;
+		Data->Parent = parent;
 		if (parent != nullptr)
 			parent->Add(this);
 	}
 
 	virtual void Add(Node* node)
 	{
-		Nodes.push_back(node);
+		Data->Nodes.push_back(node);
 	}
+};
+
+struct NodeData
+{
+	Node* Parent;
+	std::vector<Node> Nodes;
+
+	StatementType StmtType;
+
+	Node Left;
+	Node Right;
+	OperatorType OpType;
+
+	ObjectType ObjType;
+	Ty_string_t Value;
+
+	NodeData()
+		: Left(nullptr), Right(nullptr)
+	{}
 };
 
 struct Block : Node
@@ -72,7 +84,7 @@ struct Statement : Node
 		: Node(parent)
 	{
 		Type = NodeType::NODE_STATEMENT;
-		StmtType = type;
+		Data->StmtType = type;
 	}
 };
 

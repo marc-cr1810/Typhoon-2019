@@ -24,7 +24,7 @@ void Parser::Parse(Lexer* lexer)
 		switch (grammar.Type)
 		{
 		case GrammarType::CREATE_VAR:
-			Statement stmt(Statement::StatementType::ASSIGN, &ProgramAST.Program);
+			Statement stmt(StatementType::ASSIGN, &ProgramAST.Program);
 			TyObject varName(&stmt);
 
 			std::vector<Ty_string_t> keywords = GetGrammarKeywordList(grammar);
@@ -45,8 +45,8 @@ void Parser::Parse(Lexer* lexer)
 					{
 						if (tokens[i].Type == TokenType::NAME)
 						{
-							varName.ObjType = TyObject::ObjectType::NAME;
-							varName.Value = tokens[i].Value;
+							varName.Data.ObjType = ObjectType::OBJ_NAME;
+							varName.Data.Value = tokens[i].Value;
 							i++;
 							continue;
 						}
@@ -120,5 +120,27 @@ Expression Parser::ExpressionTokensToAST(std::vector<Token> tokens, Node* parent
 		stack.pop();
 	}
 
-	return Expression(parent);
+	return RPNToAST(outputStack, parent);
+}
+
+Expression Parser::RPNToAST(std::stack<Token> stack, Node* parent)
+{
+	Expression expr(parent);
+
+	if (stack.size() > 0)
+	{
+		Token first = stack.top();
+		stack.pop();
+		if (first.Type != TokenType::OPERATOR)
+		{
+			TyObject object(&expr);
+			object.Data.ObjType = (ObjectType)first.Type;
+			object.Data.Value = first.Value;
+			expr.Data.Left = (Node)object;
+		}
+		else
+			expr.Data.OpType == TokenToOperatorToken(first).OpType;
+	}
+	
+	return expr;
 }
