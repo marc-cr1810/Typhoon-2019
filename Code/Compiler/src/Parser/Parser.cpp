@@ -21,54 +21,55 @@ void Parser::Parse(Lexer* lexer)
 		Grammar grammar = MatchGrammar(tokens);
 		std::cout << grammar.Format << std::endl;
 
+		Node statement = NewStatementNode(StatementType::UNKNOWN_STATEMENT);
 		switch (grammar.Type)
 		{
 		case GrammarType::CREATE_VAR:
-			Statement stmt(StatementType::ASSIGN, &ProgramAST.Program);
-			TyObject varName(&stmt);
+			statement.StmtType = StatementType::ASSIGN;
+			break;
+		}
 
-			std::vector<Ty_string_t> keywords = GetGrammarKeywordList(grammar);
-			for (Ty_string_t keyword : keywords)
+		std::vector<Ty_string_t> keywords = GetGrammarKeywordList(grammar);
+		for (Ty_string_t keyword : keywords)
+		{
+			std::smatch m;
+			if (std::regex_match(keyword, m, std::regex("^\'([^\']+)\'$")))
 			{
-				std::smatch m;
-				if (std::regex_match(keyword, m, std::regex("^\'([^\']+)\'$")))
+				if (m[1] == tokens[i].Value)
 				{
-					if (m[1] == tokens[i].Value)
+					i++;
+					continue;
+				}
+			}
+			else
+			{
+				if (keyword == "NAME")
+				{
+					if (tokens[i].Type == TokenType::NAME)
 					{
+						statement.AddChild(NewObjectNode(ObjectType::OBJ_NAME, tokens[i].Value));
 						i++;
 						continue;
 					}
 				}
-				else
+				else if (keyword == "EXPR")
 				{
-					if (keyword == "NAME")
+					std::vector<Token> exprTokens;
+					while (lexer->GetTokens()[i].Type != TokenType::END)
 					{
-						if (tokens[i].Type == TokenType::NAME)
-						{
-							varName.Data.ObjType = ObjectType::OBJ_NAME;
-							varName.Data.Value = tokens[i].Value;
-							i++;
-							continue;
-						}
+						exprTokens.push_back(lexer->GetTokens()[i]);
+						i++;
 					}
-					else if (keyword == "EXPR")
-					{
-						std::vector<Token> exprTokens;
-						while (lexer->GetTokens()[i].Type != TokenType::END)
-						{
-							exprTokens.push_back(lexer->GetTokens()[i]);
-							i++;
-						}
-						Expression expr = ExpressionTokensToAST(exprTokens, &ProgramAST.Program);
-					}
+					statement.AddChild(ExpressionTokensToAST(exprTokens));
 				}
 			}
-			break;
 		}
+
+		ProgramAST.Program.AddChild(statement);
 	}
 }
 
-Expression Parser::ExpressionTokensToAST(std::vector<Token> tokens, Node* parent)
+Node Parser::ExpressionTokensToAST(std::vector<Token> tokens)
 {
 	std::stack<Token> stack;
 	std::stack<Token> outputStack;
@@ -120,27 +121,61 @@ Expression Parser::ExpressionTokensToAST(std::vector<Token> tokens, Node* parent
 		stack.pop();
 	}
 
-	return RPNToAST(outputStack, parent);
+	return RPNToAST(outputStack);
 }
 
-Expression Parser::RPNToAST(std::stack<Token> stack, Node* parent)
+Node Parser::RPNToAST(std::stack<Token> stack, OperatorType opType)
 {
-	Expression expr(parent);
+	Node expr;
+	expr.Type = NodeType::NODE_EXPRESSION;
+	expr.OpType = opType;
 
-	if (stack.size() > 0)
+	if (stack.size() > 1)
 	{
-		Token first = stack.top();
-		stack.pop();
-		if (first.Type != TokenType::OPERATOR)
+		if (opType == OperatorType::UNKNOWN)
 		{
-			TyObject object(&expr);
-			object.Data.ObjType = (ObjectType)first.Type;
-			object.Data.Value = first.Value;
-			expr.Data.Left = (Node)object;
+			Token op = stack.top();
+			stack.pop();
+			if (op.Type != TokenType::OPERATOR)
+			{
+				std::cout << "Warning: Expected an operator!" << std::endl;
+				expr.AddChild(NewObjectNode((ObjectType)op.Type, op.Value));
+			}
+			else
+			{
+				expr.OpType = TokenToOperatorToken(op).OpType;
+			}
+		}
+
+		Token right = stack.top();
+		stack.pop();
+		Token left = stack.top();
+		stack.pop();
+
+		if (left.Type != TokenType::OPERATOR)
+		{
+			expr.AddChild(NewObjectNode((ObjectType)left.Type, left.Value));
 		}
 		else
-			expr.Data.OpType == TokenToOperatorToken(first).OpType;
+		{
+			expr.AddChild(RPNToAST(stack, TokenToOperatorToken(left).OpType));
+		}
+
+		if (right.Type != TokenType::OPERATOR)
+		{
+			expr.AddChild(NewObjectNode((ObjectType)right.Type, right.Value));
+		}
+		else
+		{
+			expr.AddChild(RPNToAST(stack, TokenToOperatorToken(right).OpType));
+		}
 	}
-	
+	else if (stack.size() == 1)
+	{
+		Token token = stack.top();
+		stack.pop();
+		expr = NewObjectNode((ObjectType)token.Type, token.Value);
+	}
+
 	return expr;
 }

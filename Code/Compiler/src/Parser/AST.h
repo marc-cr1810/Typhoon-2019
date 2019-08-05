@@ -16,6 +16,7 @@ enum NodeType
 
 enum ObjectType
 {
+	OBJ_UNKNOWN = -1,
 	OBJ_NAME = TokenType::NAME,
 	OBJ_NUMBER = TokenType::NUMBER,
 	OBJ_FLOAT = TokenType::FLOAT,
@@ -30,89 +31,51 @@ enum StatementType
 	IF
 };
 
-struct NodeData;
-
-struct Node
+typedef struct TyNode
 {
-	NodeType Type = NodeType::NODE;
-	struct NodeData *Data;
+	NodeType Type = NodeType::UNKNOWN_NODE;
+	ObjectType ObjType = ObjectType::OBJ_UNKNOWN;
+	OperatorType OpType = OperatorType::UNKNOWN;
+	StatementType StmtType = StatementType::UNKNOWN_STATEMENT;
 
-	Node(Node* parent)
-	{
-		Data = new NodeData;
-		Data->Parent = parent;
-		if (parent != nullptr)
-			parent->Add(this);
-	}
-
-	virtual void Add(Node* node)
-	{
-		Data->Nodes.push_back(node);
-	}
-};
-
-struct NodeData
-{
-	Node* Parent;
-	std::vector<Node> Nodes;
-
-	StatementType StmtType;
-
-	Node Left;
-	Node Right;
-	OperatorType OpType;
-
-	ObjectType ObjType;
 	Ty_string_t Value;
+	std::vector<struct TyNode> Children;
 
-	NodeData()
-		: Left(nullptr), Right(nullptr)
-	{}
-};
-
-struct Block : Node
-{
-	Block(Node* parent) : Node(parent)
-	{
-		Type = NodeType::NODE_BLOCK;
-	}
-};
-
-struct Statement : Node
-{
-	Statement(StatementType type, Node* parent)
-		: Node(parent)
-	{
-		Type = NodeType::NODE_STATEMENT;
-		Data->StmtType = type;
-	}
-};
-
-struct Expression : Node
-{
-	Expression(Node* parent)
-		: Node(parent)
-	{
-		Type = NodeType::NODE_EXPRESSION;
-	}
-};
-
-struct TyObject : Node
-{
-	TyObject(Node* parent)
-		: Node(parent)
-	{
-		Type = NodeType::NODE_OBJECT;
-	}
-};
+	void AddChild(struct TyNode child) { Children.push_back(child); }
+} Node;
 
 struct AST
 {
-	Block Program;
+	Node Program;
 
 	AST()
-		: Program(nullptr)
 	{}
 };
+
+static Node NewNode(NodeType type, ObjectType objType, OperatorType opType, StatementType stmtType, Ty_string_t value)
+{
+	Node n;
+	n.Type = type;
+	n.ObjType = objType;
+	n.OpType = opType;
+	n.StmtType = stmtType;
+	n.Value = value;
+	return n;
+}
+
+static Node NewStatementNode(StatementType stmtType)
+{
+	return NewNode(NodeType::NODE_STATEMENT, ObjectType::OBJ_UNKNOWN, OperatorType::UNKNOWN, stmtType, "");
+}
+
+static Node NewExpressionNode(OperatorType opType)
+{
+	return NewNode(NodeType::NODE_EXPRESSION, ObjectType::OBJ_UNKNOWN, opType, StatementType::UNKNOWN_STATEMENT, "");
+}
+
+static Node NewObjectNode(ObjectType type, Ty_string_t value)
+{
+	return NewNode(NodeType::NODE_OBJECT, type, OperatorType::UNKNOWN, StatementType::UNKNOWN_STATEMENT, value);
+}
 
 #endif
