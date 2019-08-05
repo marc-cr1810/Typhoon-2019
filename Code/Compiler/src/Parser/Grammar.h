@@ -43,7 +43,7 @@ const Grammar GrammarFormats[4] = {
 	{ GrammarType::CREATE_VAR, "'var' NAME '=' EXPR" },
 	{ GrammarType::SET_VAR, "NAME '=' EXPR" },
 	{ GrammarType::IF_STATEMENT, "'if' EXPR ':'" },
-	{ GrammarType::ELSE_STATEMENT, "'else'" }
+	{ GrammarType::ELSE_STATEMENT, "'else' ':'" }
 };
 
 static std::vector<Ty_string_t> GetGrammarKeywordList(Grammar grammar)

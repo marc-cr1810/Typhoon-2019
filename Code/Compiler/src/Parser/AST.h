@@ -3,6 +3,7 @@
 
 #include "../Port.h"
 #include "Token.h"
+#include "Grammar.h"
 
 enum NodeType
 {
@@ -27,8 +28,10 @@ enum ObjectType
 enum StatementType
 {
 	UNKNOWN_STATEMENT = -1,
-	ASSIGN,
-	IF
+	ASSIGN = GrammarType::SET_VAR,
+	ASSIGN_NEW = GrammarType::CREATE_VAR,
+	IF = GrammarType::IF_STATEMENT,
+	ELSE = GrammarType::ELSE_STATEMENT
 };
 
 typedef struct TyNode
