@@ -10,7 +10,8 @@ enum GrammarType
 	CREATE_VAR,
 	SET_VAR,
 	IF_STATEMENT,
-	ELSE_STATEMENT
+	ELSE_STATEMENT,
+	ELSE_IF_STATEMENT
 };
 
 enum GrammarKeywordType
@@ -39,10 +40,11 @@ const Ty_int32_t ExpressionTokenTypes[6] = {
 	TokenType::OPERATOR
  };
 
-const Grammar GrammarFormats[4] = {
+const Grammar GrammarFormats[5] = {
 	{ GrammarType::CREATE_VAR, "'var' NAME '=' EXPR" },
 	{ GrammarType::SET_VAR, "NAME '=' EXPR" },
 	{ GrammarType::IF_STATEMENT, "'if' EXPR ':'" },
+	{ GrammarType::ELSE_IF_STATEMENT, "'else' 'if' EXPR ':'"},
 	{ GrammarType::ELSE_STATEMENT, "'else' ':'" }
 };
 

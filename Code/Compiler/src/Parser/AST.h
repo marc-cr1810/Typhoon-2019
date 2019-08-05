@@ -31,7 +31,8 @@ enum StatementType
 	ASSIGN = GrammarType::SET_VAR,
 	ASSIGN_NEW = GrammarType::CREATE_VAR,
 	IF = GrammarType::IF_STATEMENT,
-	ELSE = GrammarType::ELSE_STATEMENT
+	ELSE = GrammarType::ELSE_STATEMENT,
+	ELSE_IF = GrammarType::ELSE_IF_STATEMENT
 };
 
 typedef struct TyNode

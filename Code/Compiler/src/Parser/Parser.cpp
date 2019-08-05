@@ -66,15 +66,33 @@ Node Parser::ParseTokens(std::vector<Token> tokens, int level)
 				}
 			}
 
-			if (statement.StmtType == StatementType::ELSE)
+			if (statement.StmtType == StatementType::ELSE || statement.StmtType == StatementType::ELSE_IF)
 			{
 				if (block.Children[block.Children.size() - 1].Type == NodeType::NODE_STATEMENT)
 				{
 					if (block.Children[block.Children.size() - 1].StmtType == StatementType::IF)
-						block.Children[block.Children.size() - 1].AddChild(statement);
+					{
+						Node* stmt = &block.Children[block.Children.size() - 1];
+						int k = 0;
+						while (k < stmt->Children.size())
+						{
+							if (stmt->Children[k].StmtType == StatementType::ELSE_IF)
+							{
+								stmt = &stmt->Children[k];
+								k = 0;
+							}
+							else if (stmt->Children[k].StmtType == StatementType::ELSE)
+							{
+								std::cout << "Error: Unexpected else statement!" << std::endl;
+								return Node();
+							}
+							k++;
+						}
+						stmt->AddChild(statement);
+					}
 					else
 					{
-						std::cout << "Error: expected a statement before else!" << std::endl;
+						std::cout << "Error: expected a statement!" << std::endl;
 						return Node();
 					}
 				}
@@ -109,7 +127,7 @@ Node Parser::ParseTokens(std::vector<Token> tokens, int level)
 					int k = 0;
 					while (k < stmt->Children.size())
 					{
-						if (stmt->Children[k].StmtType == StatementType::IF)
+						if (stmt->Children[k].StmtType == StatementType::ELSE_IF)
 						{
 							stmt = &stmt->Children[k];
 							k = 0;
