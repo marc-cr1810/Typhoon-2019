@@ -144,6 +144,8 @@ static Grammar MatchGrammar(std::vector<Token> tokens)
 						NextToken: ;
 							i++;
 						}
+						if (level == 0)
+							goto NextKeyword;
 					}
 					goto NextFormat;
 				}
