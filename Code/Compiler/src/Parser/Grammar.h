@@ -121,9 +121,28 @@ static Grammar MatchGrammar(std::vector<Token> tokens)
 					if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::LEFT_BRACKET)
 					{
 						int level = 1;
-						while (TokenToOperatorToken(tokens[i]).OpType == OperatorType::RIGHT_BRACKET && level > 0)
+						i++;
+						while (level > 0)
 						{
-							if ()
+							if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::LEFT_BRACKET)
+							{
+								level++;
+								goto NextToken;
+							}
+							else if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::RIGHT_BRACKET)
+							{
+								level--;
+								goto NextToken;
+							}
+							for (Ty_int32_t exprTokenType : ExpressionTokenTypes)
+							{
+								if (exprTokenType == tokens[i].Type)
+									goto NextToken;
+							}
+							if (tokens[i].Type != TokenType::OPERATOR && tokens[i].Type != TokenType::DECLARATION)
+								goto NextFormat;
+						NextToken: ;
+							i++;
 						}
 					}
 					goto NextFormat;
