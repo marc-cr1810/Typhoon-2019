@@ -17,7 +17,7 @@ enum TokenType
 	OPERATOR_SPECIAL,
 	STATEMENT,
 	DECLARATION,
-	FUNCTION
+	FUNCTION_CALL
 };
 
 enum OperatorType

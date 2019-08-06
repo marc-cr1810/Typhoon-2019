@@ -6,7 +6,7 @@
 // Different token types, uses regex in the value to find the tokens
 const Token TokenTypes[10] = {
 	{ TokenType::END, "^\\n$" },
-	{ TokenType::FUNCTION, "^func$" },										// Checks if the value is "func"
+	{ TokenType::FUNCTION_CALL, "^func$" },										// Checks if the value is "func"
 	{ TokenType::DECLARATION, "^var$" },										// Checks if the value is "var"
 	{ TokenType::STATEMENT, "^if$" },										// Checks if the value is "if"
 	{ TokenType::STATEMENT, "^else$" },										// Checks if the value is "else"

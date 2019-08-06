@@ -91,14 +91,13 @@ Node Parser::ParseTokens(std::vector<Token> tokens)
 										i++;
 									}
 									funcCall += ")";
-									Lexer lex;
-									lex.TokenizeString(funcCall);
-									std::cout << funcCall << std::endl;
+									exprTokens.push_back({ TokenType::FUNCTION_CALL, funcCall });
 								}
 								else
 									exprTokens.push_back(tokens[i++]);
 							}
-							exprTokens.push_back(tokens[i++]);
+							else
+								exprTokens.push_back(tokens[i++]);
 						}
 						statement.AddChild(ExpressionTokensToAST(exprTokens));
 					}
@@ -297,23 +296,13 @@ Node Parser::RPNToAST(std::stack<Token>* stack, OperatorType opType)
 				expr.OpType = TokenToOperatorToken(op).OpType;
 		}
 
-		Node right;
 		Token rightToken = stack->top();
 		stack->pop();
+		Node right = GetRPNNodeFromToken(stack, rightToken);
 
-		if (rightToken.Type != TokenType::OPERATOR)
-			right = NewObjectNode((ObjectType)rightToken.Type, rightToken.Value);
-		else
-			right = RPNToAST(stack, TokenToOperatorToken(rightToken).OpType);
-
-		Node left;
 		Token leftToken = stack->top();
 		stack->pop();
-
-		if (leftToken.Type != TokenType::OPERATOR)
-			left = NewObjectNode((ObjectType)leftToken.Type, leftToken.Value);
-		else
-			left = RPNToAST(stack, TokenToOperatorToken(leftToken).OpType);
+		Node left = GetRPNNodeFromToken(stack, leftToken);
 
 		expr.AddChild(left);
 		expr.AddChild(right);
@@ -322,8 +311,53 @@ Node Parser::RPNToAST(std::stack<Token>* stack, OperatorType opType)
 	{
 		Token token = stack->top();
 		stack->pop();
-		expr = NewObjectNode((ObjectType)token.Type, token.Value);
+		expr = GetRPNNodeFromToken(stack, token);
 	}
 
 	return expr;
+}
+
+Node Parser::GetRPNNodeFromToken(std::stack<Token>* stack, Token token)
+{
+	Node node;
+
+	if (token.Type == TokenType::OPERATOR)
+		node = RPNToAST(stack, TokenToOperatorToken(token).OpType);
+	else if (token.Type == TokenType::FUNCTION_CALL)
+	{
+		Lexer lexer;
+		lexer.TokenizeString(token.Value);
+
+		node = NewObjectNode(ObjectType::OBJ_FUNCTION_CALL, lexer.GetTokens()[0].Value);
+
+		std::vector<Token> argTokens;
+
+		int level = 1;
+		int i = 2;
+		while (level > 0)
+		{
+			if (TokenToOperatorToken(lexer.GetTokens()[i]).OpType == OperatorType::LEFT_BRACKET)
+			{
+				level++;
+			}
+			else if (TokenToOperatorToken(lexer.GetTokens()[i]).OpType == OperatorType::RIGHT_BRACKET)
+			{
+				level--;
+			}
+			if (level > 0)
+			{
+				if (TokenToOperatorToken(lexer.GetTokens()[i]).OpType == OperatorType::COMMA)
+					argTokens.push_back({ TokenType::END, "\n" });
+				else
+					argTokens.push_back(lexer.GetTokens()[i]);
+			}
+			i++;
+		}
+		argTokens.push_back({ TokenType::END, "\n" });
+		node.AddChild(ParseTokens(argTokens));
+	}
+	else
+		node = NewObjectNode((ObjectType)token.Type, token.Value);
+
+	return node;
 }

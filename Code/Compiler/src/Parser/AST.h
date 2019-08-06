@@ -22,7 +22,8 @@ enum ObjectType
 	OBJ_NUMBER = TokenType::NUMBER,
 	OBJ_FLOAT = TokenType::FLOAT,
 	OBJ_STRING = TokenType::STRING,
-	OBJ_BOOL = TokenType::BOOL
+	OBJ_BOOL = TokenType::BOOL,
+	OBJ_FUNCTION_CALL = TokenType::FUNCTION_CALL
 };
 
 enum StatementType
