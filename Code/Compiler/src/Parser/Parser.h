@@ -15,7 +15,7 @@ public:
 private:
 	Node ParseTokens(std::vector<Token> tokens, int level = 0);
 	Node ExpressionTokensToAST(std::vector<Token> tokens);
-	Node RPNToAST(std::stack<Token> stack, OperatorType opType = OperatorType::UNKNOWN);
+	Node RPNToAST(std::stack<Token>* stack, OperatorType opType = OperatorType::UNKNOWN);
 
 	AST ProgramAST;
 };

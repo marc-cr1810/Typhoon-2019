@@ -201,21 +201,21 @@ Node Parser::ExpressionTokensToAST(std::vector<Token> tokens)
 		stack.pop();
 	}
 
-	return RPNToAST(outputStack);
+	return RPNToAST(&outputStack);
 }
 
-Node Parser::RPNToAST(std::stack<Token> stack, OperatorType opType)
+Node Parser::RPNToAST(std::stack<Token>* stack, OperatorType opType)
 {
 	Node expr;
 	expr.Type = NodeType::NODE_EXPRESSION;
 	expr.OpType = opType;
 
-	if (stack.size() > 1)
+	if (stack->size() > 1)
 	{
 		if (opType == OperatorType::UNKNOWN)
 		{
-			Token op = stack.top();
-			stack.pop();
+			Token op = stack->top();
+			stack->pop();
 			if (op.Type != TokenType::OPERATOR)
 			{
 				std::cout << "Warning: Expected an operator!" << std::endl;
@@ -225,25 +225,31 @@ Node Parser::RPNToAST(std::stack<Token> stack, OperatorType opType)
 				expr.OpType = TokenToOperatorToken(op).OpType;
 		}
 
-		Token right = stack.top();
-		stack.pop();
-		Token left = stack.top();
-		stack.pop();
+		Node right;
+		Token rightToken = stack->top();
+		stack->pop();
 
-		if (left.Type != TokenType::OPERATOR)
-			expr.AddChild(NewObjectNode((ObjectType)left.Type, left.Value));
+		if (rightToken.Type != TokenType::OPERATOR)
+			right = NewObjectNode((ObjectType)rightToken.Type, rightToken.Value);
 		else
-			expr.AddChild(RPNToAST(stack, TokenToOperatorToken(left).OpType));
+			right = RPNToAST(stack, TokenToOperatorToken(rightToken).OpType);
 
-		if (right.Type != TokenType::OPERATOR)
-			expr.AddChild(NewObjectNode((ObjectType)right.Type, right.Value));
+		Node left;
+		Token leftToken = stack->top();
+		stack->pop();
+
+		if (leftToken.Type != TokenType::OPERATOR)
+			left = NewObjectNode((ObjectType)leftToken.Type, leftToken.Value);
 		else
-			expr.AddChild(RPNToAST(stack, TokenToOperatorToken(right).OpType));
+			left = RPNToAST(stack, TokenToOperatorToken(leftToken).OpType);
+
+		expr.AddChild(left);
+		expr.AddChild(right);
 	}
-	else if (stack.size() == 1)
+	else if (stack->size() == 1)
 	{
-		Token token = stack.top();
-		stack.pop();
+		Token token = stack->top();
+		stack->pop();
 		expr = NewObjectNode((ObjectType)token.Type, token.Value);
 	}
 
