@@ -99,10 +99,15 @@ void Lexer::AddToken(Ty_string_t value)
 		{
 			if (std::regex_match(value, std::regex(type.Value)))
 			{
+				if (type.Type == TokenType::END && m_Tokens[m_Tokens.size() - 1].Type == TokenType::START)
+				{
+					m_Tokens.pop_back();
+					return;
+				}
 				m_Tokens.push_back({ type.Type, value });
 				return;
 			}
 		}
-		m_Tokens.push_back({ TokenType::UNNOWN, value });
+		m_Tokens.push_back({ TokenType::UNKNOWN_TOKEN, value });
 	}
 }

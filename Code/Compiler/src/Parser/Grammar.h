@@ -3,12 +3,16 @@
 
 #include "../Port.h"
 #include "Token.h"
+#include "Tokens.h"
+
+#include <iostream>
 
 enum GrammarType
 {
 	UNKNOWN_GRAMMAR = -1,
 	CREATE_VAR,
-	SET_VAR,
+	CREATE_FUNCTION,
+	EXPRESSION_STATEMENT,
 	IF_STATEMENT,
 	ELSE_STATEMENT,
 	ELSE_IF_STATEMENT
@@ -40,9 +44,11 @@ const Ty_int32_t ExpressionTokenTypes[6] = {
 	TokenType::OPERATOR
  };
 
-const Grammar GrammarFormats[5] = {
+const Grammar GrammarFormats[7] = {
+	{ GrammarType::CREATE_VAR, "'var' NAME" },
 	{ GrammarType::CREATE_VAR, "'var' NAME '=' EXPR" },
-	{ GrammarType::SET_VAR, "NAME '=' EXPR" },
+	{ GrammarType::CREATE_FUNCTION, "'func' NAME ARGS ':'" },
+	{ GrammarType::EXPRESSION_STATEMENT, "EXPR" },
 	{ GrammarType::IF_STATEMENT, "'if' EXPR ':'" },
 	{ GrammarType::ELSE_IF_STATEMENT, "'else' 'if' EXPR ':'"},
 	{ GrammarType::ELSE_STATEMENT, "'else' ':'" }
@@ -109,6 +115,18 @@ static Grammar MatchGrammar(std::vector<Token> tokens)
 							goto NextKeyword;
 					NextExprToken: ;
 					}
+				}
+				else if (keyword == "ARGS")
+				{
+					if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::LEFT_BRACKET)
+					{
+						int level = 1;
+						while (TokenToOperatorToken(tokens[i]).OpType == OperatorType::RIGHT_BRACKET && level > 0)
+						{
+							if ()
+						}
+					}
+					goto NextFormat;
 				}
 			}
 		NextKeyword: ;

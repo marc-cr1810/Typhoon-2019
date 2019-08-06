@@ -5,7 +5,7 @@
 
 enum TokenType
 {
-	UNNOWN = -1,
+	UNKNOWN_TOKEN = -1,
 	START,
 	END,
 	NAME,
@@ -15,7 +15,9 @@ enum TokenType
 	BOOL,
 	OPERATOR,
 	OPERATOR_SPECIAL,
-	STATEMENT
+	STATEMENT,
+	DECLARATION,
+	FUNCTION
 };
 
 enum OperatorType
@@ -35,7 +37,8 @@ enum OperatorType
 	GREATER_THAN_EQUAL_TO,
 	LEFT_BRACKET,
 	RIGHT_BRACKET,
-	SEMICOLON
+	SEMICOLON,
+	COMMA
 };
 
 enum OperatorCategory

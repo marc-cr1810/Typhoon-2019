@@ -28,7 +28,7 @@ enum ObjectType
 enum StatementType
 {
 	UNKNOWN_STATEMENT = -1,
-	ASSIGN = GrammarType::SET_VAR,
+	EXPRESSION = GrammarType::EXPRESSION_STATEMENT,
 	ASSIGN_NEW = GrammarType::CREATE_VAR,
 	IF = GrammarType::IF_STATEMENT,
 	ELSE = GrammarType::ELSE_STATEMENT,

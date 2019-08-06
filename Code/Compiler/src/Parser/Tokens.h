@@ -4,9 +4,10 @@
 #include "Token.h"
 
 // Different token types, uses regex in the value to find the tokens
-const Token TokenTypes[9] = {
+const Token TokenTypes[10] = {
 	{ TokenType::END, "^\\n$" },
-	{ TokenType::STATEMENT, "^var$" },										// Checks if the value is "var"
+	{ TokenType::FUNCTION, "^func$" },										// Checks if the value is "func"
+	{ TokenType::DECLARATION, "^var$" },										// Checks if the value is "var"
 	{ TokenType::STATEMENT, "^if$" },										// Checks if the value is "if"
 	{ TokenType::STATEMENT, "^else$" },										// Checks if the value is "else"
 	{ TokenType::NUMBER, "^-?\\d*$"},										// Checks if the value is only digits
@@ -17,7 +18,7 @@ const Token TokenTypes[9] = {
 };
 
 // Different operator tokens, uses regex in the value to find the tokens
-const OperatorToken OperatorTokenTypes[15] = {
+const OperatorToken OperatorTokenTypes[16] = {
 	{ TokenType::START, "^\\t*$", OperatorType::UNKNOWN, OperatorCategory::CATEGORY_UNKNOWN },
 	{ TokenType::OPERATOR, "^=$", OperatorType::EQUAL, OperatorCategory::ASSIGNMENT },					// Set
 	{ TokenType::OPERATOR, "^==$", OperatorType::EQUAL_TO, OperatorCategory::EQUALITY },				// Equal to
@@ -32,6 +33,7 @@ const OperatorToken OperatorTokenTypes[15] = {
 	{ TokenType::OPERATOR, "^<=$", OperatorType::LESS_THAN_EQUAL_TO, OperatorCategory::RELATIONAL },	// Less than or equal to
 	{ TokenType::OPERATOR, "^\\($", OperatorType::LEFT_BRACKET, OperatorCategory::POSTFIX },			// Left bracket
 	{ TokenType::OPERATOR, "^\\)$", OperatorType::RIGHT_BRACKET, OperatorCategory::POSTFIX },		// Right bracket
+	{ TokenType::OPERATOR, "^,$", OperatorType::COMMA, OperatorCategory::CATEGORY_UNKNOWN },		// Right bracket
 	{ TokenType::OPERATOR_SPECIAL, "^:$", OperatorType::SEMICOLON, OperatorCategory::CATEGORY_UNKNOWN }			// Semicolon
 };
 
@@ -42,7 +44,7 @@ static OperatorToken TokenToOperatorToken(Token token)
 		if (std::regex_match(token.Value, std::regex(opToken.Value)))
 			return opToken;
 	}
-	return { TokenType::UNNOWN, "", OperatorType::UNKNOWN, OperatorCategory::CATEGORY_UNKNOWN };
+	return { TokenType::UNKNOWN_TOKEN, "", OperatorType::UNKNOWN, OperatorCategory::CATEGORY_UNKNOWN };
 }
 
 #endif
