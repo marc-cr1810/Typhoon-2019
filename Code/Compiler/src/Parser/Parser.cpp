@@ -13,7 +13,7 @@ void Parser::Parse(Lexer* lexer)
 		std::cout << "Failed To Compile Program!" << std::endl;
 }
 
-Node Parser::ParseTokens(std::vector<Token> tokens, int level)
+Node Parser::ParseTokens(std::vector<Token> tokens)
 {
 	Node block;
 	block.Type = NodeType::NODE_BLOCK;
@@ -51,7 +51,12 @@ Node Parser::ParseTokens(std::vector<Token> tokens, int level)
 				{
 					if (keyword == "NAME")
 					{
-						if (tokens[i].Type == TokenType::NAME)
+						if (statement.StmtType == StatementType::FUNCTION_DECLARATION)
+						{
+							statement.Value = tokens[i++].Value;
+							continue;
+						}
+						else
 						{
 							statement.AddChild(NewObjectNode(ObjectType::OBJ_NAME, tokens[i++].Value));
 							continue;
@@ -62,9 +67,68 @@ Node Parser::ParseTokens(std::vector<Token> tokens, int level)
 						std::vector<Token> exprTokens;
 						while (tokens[i].Type != TokenType::END && tokens[i].Type != TokenType::OPERATOR_SPECIAL)
 						{
+							if (i < tokens.size() - 1 && tokens[i].Type == TokenType::NAME)
+							{
+								if (TokenToOperatorToken(tokens[i + 1]).OpType == OperatorType::LEFT_BRACKET)
+								{
+									Ty_string_t funcCall = tokens[i++].Value + tokens[i].Value + " ";
+									int level = 1;
+									i++;
+									while (level > 0)
+									{
+										if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::LEFT_BRACKET)
+										{
+											level++;
+										}
+										else if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::RIGHT_BRACKET)
+										{
+											level--;
+										}
+										if (level > 0)
+										{
+											funcCall += tokens[i].Value + " ";
+										}
+										i++;
+									}
+									funcCall += ")";
+									Lexer lex;
+									lex.TokenizeString(funcCall);
+									std::cout << funcCall << std::endl;
+								}
+								else
+									exprTokens.push_back(tokens[i++]);
+							}
 							exprTokens.push_back(tokens[i++]);
 						}
 						statement.AddChild(ExpressionTokensToAST(exprTokens));
+					}
+					else if (keyword == "ARGS")
+					{
+						std::vector<Token> argTokens;
+
+						int level = 1;
+						i++;
+						while (level > 0)
+						{
+							if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::LEFT_BRACKET)
+							{
+								level++;
+							}
+							else if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::RIGHT_BRACKET)
+							{
+								level--;
+							}
+							if (level > 0)
+							{
+								if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::COMMA)
+									argTokens.push_back({ TokenType::END, "\n" });
+								else
+									argTokens.push_back(tokens[i]);
+							}
+							i++;
+						}
+						argTokens.push_back({ TokenType::END, "\n" });
+						statement.AddChild(ParseTokens(argTokens));
 					}
 				}
 			}
@@ -99,6 +163,11 @@ Node Parser::ParseTokens(std::vector<Token> tokens, int level)
 						return Node();
 					}
 				}
+				else
+				{
+					std::cout << "Error: expected a statement!" << std::endl;
+					return Node();
+				}
 			}
 			else
 				block.AddChild(statement);
@@ -106,7 +175,7 @@ Node Parser::ParseTokens(std::vector<Token> tokens, int level)
 		else
 		{
 			std::vector<Token> newBlock;
-			while (tokens[i].Value.length() > level && tokens[i].Type == TokenType::START)
+			while (tokens[i].Value.length() > 0 && tokens[i].Type == TokenType::START)
 			{
 				tokens[i].Value = tokens[i].Value.substr(0, tokens[i].Value.length() - 1);
 				if (tokens[i].Value.length() > 0)
@@ -139,13 +208,13 @@ Node Parser::ParseTokens(std::vector<Token> tokens, int level)
 							stmt = &stmt->Children[k];
 						k++;
 					}
-					stmt->AddChild(ParseTokens(newBlock, level + 1));
+					stmt->AddChild(ParseTokens(newBlock));
 				}
 				else
-					block.Children[block.Children.size() - 1].AddChild(ParseTokens(newBlock, level + 1));
+					block.Children[block.Children.size() - 1].AddChild(ParseTokens(newBlock));
 			}
 			else
-				block.AddChild(ParseTokens(newBlock, level + 1));
+				block.AddChild(ParseTokens(newBlock));
 			i--;
 		}
 	}

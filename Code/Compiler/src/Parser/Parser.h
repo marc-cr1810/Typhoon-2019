@@ -13,7 +13,7 @@ public:
 	
 	void Parse(Lexer *lexer);
 private:
-	Node ParseTokens(std::vector<Token> tokens, int level = 0);
+	Node ParseTokens(std::vector<Token> tokens);
 	Node ExpressionTokensToAST(std::vector<Token> tokens);
 	Node RPNToAST(std::stack<Token>* stack, OperatorType opType = OperatorType::UNKNOWN);
 
