@@ -4,6 +4,7 @@
 #include "../Port.h"
 #include "Lexer.h"
 #include "Grammar.h"
+#include "AST.h"
 
 class Parser
 {
@@ -12,7 +13,12 @@ public:
 	
 	void Parse(Lexer *lexer);
 private:
+	Node ParseTokens(std::vector<Token> tokens);
+	Node ExpressionTokensToAST(std::vector<Token> tokens);
+	Node RPNToAST(std::stack<Token>* stack, OperatorType opType = OperatorType::UNKNOWN);
+	Node GetRPNNodeFromToken(std::stack<Token>* stack, Token token);
 
+	AST ProgramAST;
 };
 
 #endif

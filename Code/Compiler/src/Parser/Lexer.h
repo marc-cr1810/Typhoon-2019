@@ -11,6 +11,7 @@ public:
     Lexer();
 
     void TokenizeFile(File file);
+	void TokenizeString(Ty_string_t string);
 
     std::vector<Token> GetTokens() const { return m_Tokens; }
 private:

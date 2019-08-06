@@ -5,17 +5,23 @@ Lexer::Lexer()
 
 void Lexer::TokenizeFile(File file)
 {
-    Ty_string_t tokenValue = "";
-    
-    for (Ty_uint32_t i = 0; i < file.GetBytes().size(); i++)
-    {
-        char byte = file.GetBytes()[i];
+	std::string s(file.GetBytes().data(), file.GetBytes().size());
+	TokenizeString(s);
+}
+
+void Lexer::TokenizeString(Ty_string_t string)
+{
+	Ty_string_t tokenValue = "";
+
+	for (Ty_uint32_t i = 0; i < string.length(); i++)
+	{
+		char byte = string[i];
 
 		// Check if the byte is a separator
-        for (char separator : m_SeparatorChars)
-        {
-            if (byte == separator)
-            {
+		for (char separator : m_SeparatorChars)
+		{
+			if (byte == separator)
+			{
 				for (Ty_string_t rule : m_SeparatorExclusionRules)
 				{
 					if (std::regex_match(tokenValue, std::regex(rule)))
@@ -24,8 +30,8 @@ void Lexer::TokenizeFile(File file)
 				AddToken(tokenValue);
 				tokenValue = "";
 				goto NextByte;
-            }
-        }
+			}
+		}
 
 		for (OperatorToken op : OperatorTokenTypes)
 		{
@@ -33,17 +39,17 @@ void Lexer::TokenizeFile(File file)
 			{
 				AddToken(tokenValue);
 				tokenValue = byte;
-				while (i < file.GetBytes().size())
+				while (i < string.length())
 				{
-					if (i + 1 == file.GetBytes().size())
-						break;
+					if (i + 1 == string.length())
+						goto SkipOperator;
 					std::string s = tokenValue;
-					s += file.GetBytes()[i + 1];
+					s += string[i + 1];
 					for (OperatorToken _op : OperatorTokenTypes)
 					{
 						if (std::regex_match(s, std::regex(_op.Value)))
 						{
-							tokenValue += file.GetBytes()[++i];
+							tokenValue += string[++i];
 							goto CheckNextByte;
 						}
 					}
@@ -56,7 +62,7 @@ void Lexer::TokenizeFile(File file)
 					AddToken(tokenValue);
 					tokenValue = "";
 					goto NextByte;
-				CheckNextByte: ;
+				CheckNextByte:;
 				}
 			}
 		}
@@ -66,11 +72,11 @@ void Lexer::TokenizeFile(File file)
 			tokenValue += byte;
 
 	SkipOperator:
-		if (i == file.GetBytes().size() - 1 || byte == m_EndLineChar)
+		if (i == string.length() - 1 || byte == m_EndLineChar)
 		{
 			if (!std::regex_match(tokenValue, std::regex(m_Comment)))
 				AddToken(tokenValue);
-			
+
 			if (m_Tokens.size() > 0)
 			{
 				if (m_Tokens[m_Tokens.size() - 1].Type != TokenType::END)
@@ -79,8 +85,8 @@ void Lexer::TokenizeFile(File file)
 			tokenValue = "";
 		}
 
-    NextByte: ;
-    }
+	NextByte:;
+	}
 }
 
 void Lexer::AddToken(Ty_string_t value)
@@ -99,10 +105,15 @@ void Lexer::AddToken(Ty_string_t value)
 		{
 			if (std::regex_match(value, std::regex(type.Value)))
 			{
+				if (type.Type == TokenType::END && m_Tokens[m_Tokens.size() - 1].Type == TokenType::START)
+				{
+					m_Tokens.pop_back();
+					return;
+				}
 				m_Tokens.push_back({ type.Type, value });
 				return;
 			}
 		}
-		m_Tokens.push_back({ TokenType::UNNOWN, value });
+		m_Tokens.push_back({ TokenType::UNKNOWN_TOKEN, value });
 	}
 }
