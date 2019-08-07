@@ -7,9 +7,9 @@ Parser::Parser()
 
 void Parser::Parse(Lexer* lexer)
 {
-	ProgramAST.Program = ParseTokens(lexer->GetTokens());
+	m_ProgramAST.Program = ParseTokens(lexer->GetTokens());
 
-	if (ProgramAST.Program.Type != NodeType::NODE_BLOCK)
+	if (m_ProgramAST.Program.Type != NodeType::NODE_BLOCK)
 		std::cout << "Failed To Compile Program!" << std::endl;
 }
 

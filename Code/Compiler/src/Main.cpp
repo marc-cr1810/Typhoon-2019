@@ -3,6 +3,7 @@
 
 #include "Parser/Lexer.h"
 #include "Parser/Parser.h"
+#include "Parser/Compiler.h"
 
 int main()
 {
@@ -14,6 +15,9 @@ int main()
 
 	Parser parser;
 	parser.Parse(&lexer);
+
+	Compiler compiler;
+	compiler.Compile(parser.GetAST());
 
 	std::cout << "Finished Compiling Program" << std::endl;
 }
