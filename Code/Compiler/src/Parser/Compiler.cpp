@@ -13,7 +13,22 @@ void Compiler::Compile(AST ast)
 		{
 			if (node.StmtType == StatementType::FUNCTION_DECLARATION)
 			{
+				Ty_string_t label = "F_" + std::to_string(m_Linker.GetFunctions().size());
+				Ty_string_t name = node.Value;
+				int argCount = node.Children.size() > 1 ? node.Children[0].Children.size() : 0;
 
+				if (argCount > 0)
+				{
+					for (Node arg : node.Children[0].Children)
+					{
+						if (arg.StmtType != StatementType::ASSIGN_NEW)
+							return;
+					}
+				}
+
+				m_Linker.AddFunction(name, label, argCount);
+
+				std::cout << label << ": " << name << std::endl;
 			}
 			else if (node.StmtType == StatementType::IF)
 			{
@@ -29,4 +44,9 @@ void Compiler::Compile(AST ast)
 			}
 		}
 	}
+}
+
+void Compiler::AddInstruction(Instruction instruction)
+{
+	m_Instructions.push_back(instruction);
 }

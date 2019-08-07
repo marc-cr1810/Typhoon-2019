@@ -126,8 +126,12 @@ Node Parser::ParseTokens(std::vector<Token> tokens)
 							}
 							i++;
 						}
-						argTokens.push_back({ TokenType::END, "\n" });
-						statement.AddChild(ParseTokens(argTokens));
+
+						if (argTokens.size() > 0)
+						{
+							argTokens.push_back({ TokenType::END, "\n" });
+							statement.AddChild(ParseTokens(argTokens));
+						}
 					}
 				}
 			}

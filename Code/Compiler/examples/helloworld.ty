@@ -15,4 +15,7 @@ func test(var d, var e):
 	else:
 		e = 0
 
+func test2():
+	a = 0
+
 test(a, b)

@@ -133,6 +133,7 @@
     <ClCompile Include="src\Main.cpp" />
     <ClCompile Include="src\Parser\Compiler.cpp" />
     <ClCompile Include="src\Parser\Lexer.cpp" />
+    <ClCompile Include="src\Parser\Linker.cpp" />
     <ClCompile Include="src\Parser\Parser.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -142,6 +143,7 @@
     <ClInclude Include="src\Parser\Grammar.h" />
     <ClInclude Include="src\Parser\Instruction.h" />
     <ClInclude Include="src\Parser\Lexer.h" />
+    <ClInclude Include="src\Parser\Linker.h" />
     <ClInclude Include="src\Parser\Parser.h" />
     <ClInclude Include="src\Parser\Token.h" />
     <ClInclude Include="src\Port.h" />
