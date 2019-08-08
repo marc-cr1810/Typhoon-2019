@@ -27,7 +27,7 @@ void Compiler::Compile(AST ast)
 				}
 
 				m_Linker.AddFunction(name, label, argCount);
-
+				
 				std::cout << label << ": " << name << std::endl;
 			}
 			else if (node.StmtType == StatementType::IF)
