@@ -17,7 +17,7 @@ int main()
 	parser.Parse(&lexer);
 
 	Compiler compiler;
-	compiler.Compile(parser.GetAST());
+	compiler.Compile(&parser);
 
 	std::cout << "Finished Compiling Program" << std::endl;
 }
