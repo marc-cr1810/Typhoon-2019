@@ -51,7 +51,25 @@ void Compiler::CompileASTNode(Node ast, int scope)
 				AddInstruction("", Bytecode::B_BRFALSE, StringToVector(endPoint->Name));
 				CompileASTNode(node.Children[1]);
 
-
+				if (node.Children.size() > 2)
+				{
+					Node* n = &node.Children[2];
+					while (n->Children.size() > 2)
+					{
+						AddInstruction("", Bytecode::B_BR, StringToVector(endPoint->Name));
+						CompileASTNode(n->Children[0]);
+						AddInstruction("", Bytecode::B_BRFALSE, StringToVector(endPoint->Name));
+						CompileASTNode(n->Children[1]);
+						if (n->Children.size() > 2)
+							n = &n->Children[2];
+						else
+							break;
+					}
+					if (n->StmtType == StatementType::ELSE)
+					{
+						CompileASTNode(n->Children[0]);
+					}
+				}
 
 				AddInstruction(endPoint->Name, Bytecode::B_NOP);
 				std::cout << node.Value << std::endl;
@@ -78,8 +96,7 @@ void Compiler::CompileASTNode(Node ast, int scope)
 			}
 			else if (node.StmtType == StatementType::EXPRESSION)
 			{
-				Node expression = node.Children[0];
-				std::cout << node.Value << std::endl;
+				CompileASTNode(node.Children[0], scope);
 			}
 		}
 		else if (node.Type == NodeType::NODE_EXPRESSION)
@@ -94,42 +111,7 @@ void Compiler::CompileASTNode(Node ast, int scope)
 
 	if (ast.Type == NodeType::NODE_EXPRESSION)
 	{
-		switch (ast.OpType)
-		{
-		case OperatorType::ADD:
-			AddInstruction("", Bytecode::B_ADD);
-			break;
-		case OperatorType::SUBTRACT:
-			AddInstruction("", Bytecode::B_SUB);
-			break;
-		case OperatorType::MULTIPLY:
-			AddInstruction("", Bytecode::B_MUL);
-			break;
-		case OperatorType::DIVIDE:
-			AddInstruction("", Bytecode::B_DIV);
-			break;
-		case OperatorType::EQUAL:
-			std::cout << ast.Value << std::endl;
-			break;
-		case OperatorType::EQUAL_TO:
-			AddInstruction("", Bytecode::B_CEQ);
-			break;
-		case OperatorType::NOT_EQUAL_TO:
-			AddInstruction("", Bytecode::B_CNEQ);
-			break;
-		case OperatorType::GREATER_THAN:
-			AddInstruction("", Bytecode::B_CGT);
-			break;
-		case OperatorType::LESS_THAN:
-			AddInstruction("", Bytecode::B_CLT);
-			break;
-		case OperatorType::GREATER_THAN_EQUAL_TO:
-			AddInstruction("", Bytecode::B_CGTEQ);
-			break;
-		case OperatorType::LESS_THAN_EQUAL_TO:
-			AddInstruction("", Bytecode::B_CLTEQ);
-			break;
-		}
+		CompileExpression(ast, scope);
 	}
 	else if (ast.Type == NodeType::NODE_OBJECT)
 	{
@@ -144,24 +126,34 @@ void Compiler::CompileObject(Node object, int scope)
 		switch (object.ObjType)
 		{
 		case ObjectType::OBJ_NAME:
+		{
+			Variable* var = m_Linker.GetVariableFromName(object.Value);
+			VariableType type = m_Linker.GetVarTypeFromLabel(var->LabelName);
+			std::vector<Ty_uint8_t> bytes = IntToBytes(var->ID);
+			if (bytes.size() == 1)
+				AddInstruction("",
+					type == VariableType::VAR_GLOBAL ? Bytecode::B_LOAD_S : 
+					type == VariableType::VAR_LOCAL ? Bytecode::B_LDLOC_S : Bytecode::B_LDARG_S, bytes);
+			else if (bytes.size() == 2)
+				AddInstruction("",
+					type == VariableType::VAR_GLOBAL ? Bytecode::B_LOAD :
+					type == VariableType::VAR_LOCAL ? Bytecode::B_LDLOC : Bytecode::B_LDARG, bytes);
+			else if (bytes.size() == 4)
+				AddInstruction("",
+					type == VariableType::VAR_GLOBAL ? Bytecode::B_LOAD_L :
+					type == VariableType::VAR_LOCAL ? Bytecode::B_LDLOC_L : Bytecode::B_LDARG_L, bytes);
+		}
 			break;
 		case ObjectType::OBJ_NUMBER:
 		{
 			int value = std::stoi(object.Value);
-			if (abs(value) < (pow(2, 8) - 1))
-				AddInstruction("", Bytecode::B_LDCONST_S, { (Ty_uint8_t)(value & 0xFF) });
-			else if (abs(value) < (pow(2, 16) - 1))
-				AddInstruction("", Bytecode::B_LDCONST, { 
-						(Ty_uint8_t)((value >> 8) & 0xFF),
-						(Ty_uint8_t)(value & 0xFF)
-					});
-			else if (abs(value) < (pow(2, 32) - 1))
-				AddInstruction("", Bytecode::B_LDCONST_L, {
-						(Ty_uint8_t)((value >> 24) & 0xFF),
-						(Ty_uint8_t)((value >> 16) & 0xFF),
-						(Ty_uint8_t)((value >> 8) & 0xFF),
-						(Ty_uint8_t)(value & 0xFF)
-					});
+			std::vector<Ty_uint8_t> bytes = IntToBytes(value);
+			if (bytes.size() == 1)
+				AddInstruction("", Bytecode::B_LDCONST_S, bytes);
+			else if (bytes.size() == 2)
+				AddInstruction("", Bytecode::B_LDCONST, bytes);
+			else if (bytes.size() == 4)
+				AddInstruction("", Bytecode::B_LDCONST_L, bytes);
 		}
 		break;
 		case ObjectType::OBJ_FLOAT:
@@ -177,6 +169,66 @@ void Compiler::CompileObject(Node object, int scope)
 		case ObjectType::OBJ_FUNCTION_CALL:
 			break;
 		}
+	}
+}
+
+void Compiler::CompileExpression(Node object, int scope)
+{
+	switch (object.OpType)
+	{
+	case OperatorType::ADD:
+		AddInstruction("", Bytecode::B_ADD);
+		break;
+	case OperatorType::SUBTRACT:
+		AddInstruction("", Bytecode::B_SUB);
+		break;
+	case OperatorType::MULTIPLY:
+		AddInstruction("", Bytecode::B_MUL);
+		break;
+	case OperatorType::DIVIDE:
+		AddInstruction("", Bytecode::B_DIV);
+		break;
+	case OperatorType::EQUAL:
+	{
+		Instruction* instruction = &m_Instructions[m_Instructions.size() - 1];
+		if (instruction->Opcode == Bytecode::B_LOAD_S)
+			instruction->Opcode = Bytecode::B_STORE_S;
+		else if (instruction->Opcode == Bytecode::B_LDLOC_S)
+			instruction->Opcode = Bytecode::B_STLOC_S;
+		else if (instruction->Opcode == Bytecode::B_LDARG_S)
+			instruction->Opcode = Bytecode::B_STARG_S;
+		else if (instruction->Opcode == Bytecode::B_LOAD)
+			instruction->Opcode = Bytecode::B_STORE;
+		else if (instruction->Opcode == Bytecode::B_LDLOC)
+			instruction->Opcode = Bytecode::B_STLOC;
+		else if (instruction->Opcode == Bytecode::B_LDARG)
+			instruction->Opcode = Bytecode::B_STARG;
+		else if (instruction->Opcode == Bytecode::B_LOAD_L)
+			instruction->Opcode = Bytecode::B_STORE_L;
+		else if (instruction->Opcode == Bytecode::B_LDLOC_L)
+			instruction->Opcode = Bytecode::B_STLOC_L;
+		else if (instruction->Opcode == Bytecode::B_LDARG_L)
+			instruction->Opcode = Bytecode::B_STARG_L;
+	}
+		break;
+	case OperatorType::EQUAL_TO:
+		AddInstruction("", Bytecode::B_CEQ);
+		break;
+	case OperatorType::NOT_EQUAL_TO:
+		AddInstruction("", Bytecode::B_CNEQ);
+		break;
+	case OperatorType::GREATER_THAN:
+		AddInstruction("", Bytecode::B_CGT);
+		break;
+	case OperatorType::LESS_THAN:
+		AddInstruction("", Bytecode::B_CLT);
+		break;
+	case OperatorType::GREATER_THAN_EQUAL_TO:
+		AddInstruction("", Bytecode::B_CGTEQ);
+		break;
+	case OperatorType::LESS_THAN_EQUAL_TO:
+		AddInstruction("", Bytecode::B_CLTEQ);
+		break;
 	}
 }
 

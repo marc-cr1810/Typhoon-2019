@@ -1,5 +1,7 @@
 #include "Linker.h"
 
+#include <iostream>
+
 Linker::Linker()
 {
 	m_Functions.push_back({ "syscall", "F_SYSCALL", std::vector<Ty_string_t>(), AccessType::GLOBAL, 0, true });
@@ -94,4 +96,30 @@ Function* Linker::GetFunctionFromName(Ty_string_t name)
 	}
 
 	return function;
+}
+
+Variable* Linker::GetVariableFromName(Ty_string_t name)
+{
+	Variable* variable = nullptr;
+
+	for (int i = 0; i < m_Variables.size(); i++)
+	{
+		if (m_Variables[i].Name == name)
+		{
+			if (m_Variables[i].Access == AccessType::LOCAL)
+				return &m_Variables[i];
+			else
+				variable = &m_Variables[i];
+		}
+	}
+
+	if (variable == nullptr)
+		std::cout << "Error: Undefined variable \"" << name << "\"" << std::endl;
+	return variable;
+}
+
+VariableType Linker::GetVarTypeFromLabel(Ty_string_t label)
+{
+	Ty_string_t type = label.substr(0, 2);
+	return type == "VA" ? VariableType::VAR_ARGUMENT : type == "VL" ? VariableType::VAR_LOCAL : VariableType::VAR_GLOBAL;
 }

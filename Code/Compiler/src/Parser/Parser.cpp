@@ -308,8 +308,8 @@ Node Parser::RPNToAST(std::stack<Token>* stack, OperatorType opType)
 		stack->pop();
 		Node left = GetRPNNodeFromToken(stack, leftToken);
 
-		expr.AddChild(left);
 		expr.AddChild(right);
+		expr.AddChild(left);
 	}
 	else if (stack->size() == 1)
 	{

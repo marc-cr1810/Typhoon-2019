@@ -83,6 +83,7 @@ public:
 	void Compile(Parser *parser);
 	void CompileASTNode(Node ast, int scope = 0);
 	void CompileObject(Node object, int scope = 0);
+	void CompileExpression(Node object, int scope = 0);
 
 	void AddInstruction(Ty_string_t label, Bytecode opcode, std::vector<Ty_uint8_t> bytes = std::vector<Ty_uint8_t>());
 

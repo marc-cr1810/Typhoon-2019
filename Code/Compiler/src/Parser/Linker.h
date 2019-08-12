@@ -9,6 +9,13 @@ enum AccessType
 	LOCAL
 };
 
+enum VariableType
+{
+	VAR_GLOBAL,
+	VAR_LOCAL,
+	VAR_ARGUMENT
+};
+
 struct Branch
 {
 	Ty_string_t Name;
@@ -50,6 +57,8 @@ public:
 	Branch* AddBranch();
 
 	Function* GetFunctionFromName(Ty_string_t name);
+	Variable* GetVariableFromName(Ty_string_t name);
+	VariableType GetVarTypeFromLabel(Ty_string_t label);
 
 	std::vector<Function> GetFunctions() const { return m_Functions; }
 	std::vector<Variable> GetVariables() const { return m_Variables; }
