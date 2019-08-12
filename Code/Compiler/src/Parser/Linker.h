@@ -56,7 +56,7 @@ public:
 
 	Branch* AddBranch();
 
-	Function* GetFunctionFromName(Ty_string_t name);
+	Function* GetFunctionFromNameArgCount(Ty_string_t name, int argCount);
 	Variable* GetVariableFromName(Ty_string_t name);
 	VariableType GetVarTypeFromLabel(Ty_string_t label);
 

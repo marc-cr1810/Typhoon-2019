@@ -80,13 +80,13 @@ Branch* Linker::AddBranch()
 	return &m_Branches[m_Branches.size() - 1];
 }
 
-Function* Linker::GetFunctionFromName(Ty_string_t name)
+Function* Linker::GetFunctionFromNameArgCount(Ty_string_t name, int argCount)
 {
 	Function* function = nullptr;
 
 	for (int i = 0; i < m_Functions.size(); i++)
 	{
-		if (m_Functions[i].Name == name)
+		if (m_Functions[i].Name == name && m_Functions[i].Args.size() == argCount)
 		{
 			if (m_Functions[i].Access == AccessType::LOCAL)
 				return &m_Functions[i];
@@ -95,6 +95,8 @@ Function* Linker::GetFunctionFromName(Ty_string_t name)
 		}
 	}
 
+	if (function == nullptr)
+		std::cout << "Error: Undefined function \"" << name << "\"" << std::endl;
 	return function;
 }
 

@@ -81,6 +81,7 @@ public:
 	Compiler();
 
 	void Compile(Parser *parser);
+	void CompileASTBlock(Node block, int scope = 0);
 	void CompileASTNode(Node ast, int scope = 0);
 	void CompileObject(Node object, int scope = 0);
 	void CompileExpression(Node object, int scope = 0);

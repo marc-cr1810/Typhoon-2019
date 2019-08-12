@@ -8,6 +8,13 @@ void Compiler::Compile(Parser* parser)
 	CompileASTNode(parser->GetAST().Program);
 }
 
+void Compiler::CompileASTBlock(Node block, int scope)
+{
+	CompileASTNode(block, scope);
+	m_Linker.RemoveFunctions(scope);
+	m_Linker.RemoveVariables(scope);
+}
+
 void Compiler::CompileASTNode(Node ast, int scope)
 {
 	for (int i = 0; i < ast.Children.size(); i++)
@@ -38,7 +45,7 @@ void Compiler::CompileASTNode(Node ast, int scope)
 				m_Linker.AddFunction(name, label, args, scope == 0 ? AccessType::GLOBAL : AccessType::LOCAL, scope);
 
 				int startPoint = m_Instructions.size();
-				CompileASTNode(node.Children[args.size() > 0 ? 1 : 0], scope + 1);
+				CompileASTBlock(node.Children[args.size() > 0 ? 1 : 0], scope + 1);
 				AddInstruction("", Bytecode::B_RET);
 				m_Instructions[startPoint].Label = label;
 				
@@ -47,9 +54,9 @@ void Compiler::CompileASTNode(Node ast, int scope)
 			else if (node.StmtType == StatementType::IF)
 			{
 				Branch* endPoint = m_Linker.AddBranch();
-				CompileASTNode(node.Children[0]);
+				CompileASTNode(node.Children[0], scope);
 				AddInstruction("", Bytecode::B_BRFALSE, StringToVector(endPoint->Name));
-				CompileASTNode(node.Children[1]);
+				CompileASTBlock(node.Children[1], scope + 1);
 
 				if (node.Children.size() > 2)
 				{
@@ -57,9 +64,9 @@ void Compiler::CompileASTNode(Node ast, int scope)
 					while (n->Children.size() > 2)
 					{
 						AddInstruction("", Bytecode::B_BR, StringToVector(endPoint->Name));
-						CompileASTNode(n->Children[0]);
+						CompileASTNode(n->Children[0], scope);
 						AddInstruction("", Bytecode::B_BRFALSE, StringToVector(endPoint->Name));
-						CompileASTNode(n->Children[1]);
+						CompileASTBlock(n->Children[1], scope + 1);
 						if (n->Children.size() > 2)
 							n = &n->Children[2];
 						else
@@ -67,7 +74,7 @@ void Compiler::CompileASTNode(Node ast, int scope)
 					}
 					if (n->StmtType == StatementType::ELSE)
 					{
-						CompileASTNode(n->Children[0]);
+						CompileASTBlock(n->Children[0], scope + 1);
 					}
 				}
 
@@ -167,6 +174,7 @@ void Compiler::CompileObject(Node object, int scope)
 		case ObjectType::OBJ_BOOL:
 			break;
 		case ObjectType::OBJ_FUNCTION_CALL:
+			std::cout << object.Value << std::endl;
 			break;
 		}
 	}
@@ -191,24 +199,36 @@ void Compiler::CompileExpression(Node object, int scope)
 	case OperatorType::EQUAL:
 	{
 		Instruction* instruction = &m_Instructions[m_Instructions.size() - 1];
-		if (instruction->Opcode == Bytecode::B_LOAD_S)
+		switch (instruction->Opcode)
+		{
+		case Bytecode::B_LOAD_S:
 			instruction->Opcode = Bytecode::B_STORE_S;
-		else if (instruction->Opcode == Bytecode::B_LDLOC_S)
+			break;
+		case Bytecode::B_LDLOC_S:
 			instruction->Opcode = Bytecode::B_STLOC_S;
-		else if (instruction->Opcode == Bytecode::B_LDARG_S)
+			break;
+		case Bytecode::B_LDARG_S:
 			instruction->Opcode = Bytecode::B_STARG_S;
-		else if (instruction->Opcode == Bytecode::B_LOAD)
+			break;
+		case Bytecode::B_LOAD:
 			instruction->Opcode = Bytecode::B_STORE;
-		else if (instruction->Opcode == Bytecode::B_LDLOC)
+			break;
+		case Bytecode::B_LDLOC:
 			instruction->Opcode = Bytecode::B_STLOC;
-		else if (instruction->Opcode == Bytecode::B_LDARG)
+			break;
+		case Bytecode::B_LDARG:
 			instruction->Opcode = Bytecode::B_STARG;
-		else if (instruction->Opcode == Bytecode::B_LOAD_L)
+			break;
+		case Bytecode::B_LOAD_L:
 			instruction->Opcode = Bytecode::B_STORE_L;
-		else if (instruction->Opcode == Bytecode::B_LDLOC_L)
+			break;
+		case Bytecode::B_LDLOC_L:
 			instruction->Opcode = Bytecode::B_STLOC_L;
-		else if (instruction->Opcode == Bytecode::B_LDARG_L)
+			break;
+		case Bytecode::B_LDARG_L:
 			instruction->Opcode = Bytecode::B_STARG_L;
+			break;
+		}
 	}
 		break;
 	case OperatorType::EQUAL_TO:
