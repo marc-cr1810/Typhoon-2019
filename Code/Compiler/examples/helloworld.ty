@@ -4,6 +4,7 @@
 # and to begin its development in its
 # early stages.
 
+var bool = true
 var str = "Hello World!"
 var a = 6 + (3 - 7)
 var b = -1

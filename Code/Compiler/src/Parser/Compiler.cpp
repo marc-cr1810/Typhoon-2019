@@ -172,9 +172,16 @@ void Compiler::CompileObject(Node object, int scope)
 		}
 			break;
 		case ObjectType::OBJ_BOOL:
+			if (object.Value == "true" || object.Value == "True")
+				AddInstruction("", Bytecode::B_LDTRUE, std::vector<Ty_uint8_t>());
+			else if (object.Value == "false" || object.Value == "False")
+				AddInstruction("", Bytecode::B_LDFALSE, std::vector<Ty_uint8_t>());
 			break;
 		case ObjectType::OBJ_FUNCTION_CALL:
-			std::cout << object.Value << std::endl;
+		{
+			Function* function = m_Linker.GetFunctionFromNameArgCount(object.Value, object.Children[0].Children.size());
+			AddInstruction("", Bytecode::B_CALL, StringToVector(function->LabelName));
+		}
 			break;
 		}
 	}
