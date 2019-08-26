@@ -53,32 +53,53 @@ void Compiler::CompileASTNode(Node ast, int scope)
 			}
 			else if (node.StmtType == StatementType::IF)
 			{
-				Branch* endPoint = m_Linker.AddBranch();
+				Branch endPoint = *m_Linker.AddBranch();
+				Branch nextPoint;
 				CompileASTNode(node.Children[0], scope);
-				AddInstruction("", Bytecode::B_BRFALSE, StringToVector(endPoint->Name));
-				CompileASTBlock(node.Children[1], scope + 1);
 
 				if (node.Children.size() > 2)
 				{
+					nextPoint = *m_Linker.AddBranch();
+					AddInstruction("", Bytecode::B_BRFALSE, StringToVector(nextPoint.Name));
+					CompileASTBlock(node.Children[1], scope + 1);
+
 					Node* n = &node.Children[2];
 					while (n->Children.size() > 2)
 					{
-						AddInstruction("", Bytecode::B_BR, StringToVector(endPoint->Name));
+						AddInstruction("", Bytecode::B_BR, StringToVector(endPoint.Name));
+						int nextIfStart = m_Instructions.size();
 						CompileASTNode(n->Children[0], scope);
-						AddInstruction("", Bytecode::B_BRFALSE, StringToVector(endPoint->Name));
+						m_Instructions[nextIfStart].Label = nextPoint.Name;
+						nextPoint = *m_Linker.AddBranch();
+						AddInstruction("", Bytecode::B_BRFALSE, StringToVector(nextPoint.Name));
 						CompileASTBlock(n->Children[1], scope + 1);
-						if (n->Children.size() > 2)
-							n = &n->Children[2];
-						else
-							break;
+						n = &n->Children[2];
 					}
-					if (n->StmtType == StatementType::ELSE)
+
+					if (n->StmtType == StatementType::ELSE_IF)
 					{
-						CompileASTBlock(n->Children[0], scope + 1);
+						AddInstruction("", Bytecode::B_BR, StringToVector(endPoint.Name));
+						int nextIfStart = m_Instructions.size();
+						CompileASTNode(n->Children[0], scope);
+						m_Instructions[nextIfStart].Label = nextPoint.Name;
+						AddInstruction("", Bytecode::B_BRFALSE, StringToVector(endPoint.Name));
+						CompileASTBlock(n->Children[1], scope + 1);
+					}
+					else if (n->StmtType == StatementType::ELSE)
+					{
+						AddInstruction("", Bytecode::B_BR, StringToVector(endPoint.Name));
+						int elseStart = m_Instructions.size();
+						CompileASTNode(n->Children[0], scope);
+						m_Instructions[elseStart].Label = nextPoint.Name;
 					}
 				}
+				else
+				{
+					AddInstruction("", Bytecode::B_BRFALSE, StringToVector(endPoint.Name));
+					CompileASTBlock(node.Children[1], scope + 1);
+				}
 
-				AddInstruction(endPoint->Name, Bytecode::B_NOP);
+				AddInstruction(endPoint.Name, Bytecode::B_NOP);
 				std::cout << node.Value << std::endl;
 			}
 			else if (node.StmtType == StatementType::ASSIGN_NEW)
@@ -93,13 +114,14 @@ void Compiler::CompileASTNode(Node ast, int scope)
 					AddInstruction("", Bytecode::B_LDNULL);
 
 				Bytecode bytecode;
-				if (var->ID < (pow(2, 8) - 1))
+				std::vector<Ty_uint8_t> bytes = IntToBytes(var->ID);
+				if (bytes.size() == 1)
 					bytecode = scope == 0 ? Bytecode::B_STORE_S : Bytecode::B_STLOC_S;
-				else if (var->ID < (pow(2, 16) - 1))
+				else if (bytes.size() == 2)
 					bytecode = scope == 0 ? Bytecode::B_STORE : Bytecode::B_STLOC;
-				else if (var->ID < (pow(2, 32) - 1))
+				else if (bytes.size() == 4)
 					bytecode = scope == 0 ? Bytecode::B_STORE_L : Bytecode::B_STLOC_L;
-				AddInstruction("", bytecode, StringToVector(label));
+				AddInstruction("", bytecode, bytes);
 			}
 			else if (node.StmtType == StatementType::EXPRESSION)
 			{
@@ -261,5 +283,14 @@ void Compiler::CompileExpression(Node object, int scope)
 
 void Compiler::AddInstruction(Ty_string_t label, Bytecode opcode, std::vector<Ty_uint8_t> bytes)
 {
+	if (m_Instructions.size() > 0)
+	{
+		if (m_Instructions[m_Instructions.size() - 1].Opcode == Bytecode::B_NOP && m_Instructions[m_Instructions.size() - 1].Label != "")
+		{
+			m_Instructions[m_Instructions.size() - 1].Opcode = opcode;
+			m_Instructions[m_Instructions.size() - 1].Bytes = bytes;
+			return;
+		}
+	}
 	m_Instructions.push_back({ label, opcode, bytes });
 }
