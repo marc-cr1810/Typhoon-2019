@@ -2,6 +2,7 @@
 #define Ty_LINKER_H
 
 #include "../Port.h"
+#include "Instruction.h"
 
 enum AccessType
 {
@@ -45,6 +46,8 @@ class Linker
 {
 public:
 	Linker();
+
+	void Link(Instruction machineLang);
 
 	Function* AddFunction(Ty_string_t name, Ty_string_t labelName, std::vector<Ty_string_t> args, AccessType access, int scope = 0);
 	void RemoveFunction(Ty_string_t labelName);

@@ -7,6 +7,11 @@ Linker::Linker()
 	m_Functions.push_back({ "syscall", "F_SYSCALL", std::vector<Ty_string_t>(), AccessType::GLOBAL, 0, true });
 }
 
+void Linker::Link(Instruction machineLang)
+{
+
+}
+
 Function* Linker::AddFunction(Ty_string_t name, Ty_string_t labelName, std::vector<Ty_string_t> args, AccessType access, int scope)
 {
 	m_Functions.push_back({ name, labelName, args, access, scope });

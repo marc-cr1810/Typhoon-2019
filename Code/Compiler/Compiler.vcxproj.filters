@@ -71,5 +71,8 @@
     <ClInclude Include="src\Utils\Converter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Parser\Instruction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

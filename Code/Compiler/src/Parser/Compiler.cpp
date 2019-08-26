@@ -63,7 +63,7 @@ void Compiler::CompileASTNode(Node ast, int scope)
 					AddInstruction("", Bytecode::B_BRFALSE, StringToVector(nextPoint.Name));
 					CompileASTBlock(node.Children[1], scope + 1);
 
-					Node* n = &node.Children[2];
+					Node* n = &node.Children[2]; 
 					while (n->Children.size() > 2)
 					{
 						AddInstruction("", Bytecode::B_BR, StringToVector(endPoint.Name));
@@ -113,7 +113,7 @@ void Compiler::CompileASTNode(Node ast, int scope)
 				else
 					AddInstruction("", Bytecode::B_LDNULL);
 
-				Bytecode bytecode;
+				Bytecode bytecode = Bytecode::B_NOP;
 				std::vector<Ty_uint8_t> bytes = IntToBytes(var.ID);
 				if (bytes.size() == 1)
 					bytecode = scope == 0 ? Bytecode::B_STORE_S : Bytecode::B_STLOC_S;
@@ -202,6 +202,17 @@ void Compiler::CompileObject(Node object, int scope)
 		case ObjectType::OBJ_FUNCTION_CALL:
 		{
 			Function* function = m_Linker.GetFunctionFromNameArgCount(object.Value, object.Children[0].Children.size());
+			for (int i = 0; i < object.Children[0].Children.size(); i++)
+			{
+				CompileASTNode(object.Children[0].Children[i], scope);
+				std::vector<Ty_uint8_t> bytes = IntToBytes(i);
+				if (bytes.size() == 1)
+					AddInstruction("", Bytecode::B_LDARG_S, bytes);
+				else if (bytes.size() == 2)
+					AddInstruction("", Bytecode::B_LDARG, bytes);
+				else if (bytes.size() == 4)
+					AddInstruction("", Bytecode::B_LDARG_L, bytes);
+			}
 			AddInstruction("", Bytecode::B_CALL, StringToVector(function->LabelName));
 		}
 			break;
