@@ -106,7 +106,7 @@ void Compiler::CompileASTNode(Node ast, int scope)
 			{
 				Ty_string_t label = (scope == 0 ? "VG_" : "VL_") + std::to_string(m_Linker.GetVariables().size());
 				Ty_string_t name = node.Children[0].Value;
-				Variable* var = m_Linker.AddVariable(name, label, scope == 0 ? AccessType::GLOBAL : AccessType::LOCAL, scope);
+				Variable var = *m_Linker.AddVariable(name, label, scope == 0 ? AccessType::GLOBAL : AccessType::LOCAL, scope);
 				
 				if (node.Children.size() > 1)
 					CompileASTNode(node.Children[1], scope);
@@ -114,7 +114,7 @@ void Compiler::CompileASTNode(Node ast, int scope)
 					AddInstruction("", Bytecode::B_LDNULL);
 
 				Bytecode bytecode;
-				std::vector<Ty_uint8_t> bytes = IntToBytes(var->ID);
+				std::vector<Ty_uint8_t> bytes = IntToBytes(var.ID);
 				if (bytes.size() == 1)
 					bytecode = scope == 0 ? Bytecode::B_STORE_S : Bytecode::B_STLOC_S;
 				else if (bytes.size() == 2)
@@ -156,9 +156,9 @@ void Compiler::CompileObject(Node object, int scope)
 		{
 		case ObjectType::OBJ_NAME:
 		{
-			Variable* var = m_Linker.GetVariableFromName(object.Value);
-			VariableType type = m_Linker.GetVarTypeFromLabel(var->LabelName);
-			std::vector<Ty_uint8_t> bytes = IntToBytes(var->ID);
+			Variable var = *m_Linker.GetVariableFromName(object.Value);
+			VariableType type = m_Linker.GetVarTypeFromLabel(var.LabelName);
+			std::vector<Ty_uint8_t> bytes = IntToBytes(var.ID);
 			if (bytes.size() == 1)
 				AddInstruction("",
 					type == VariableType::VAR_GLOBAL ? Bytecode::B_LOAD_S : 
