@@ -5,8 +5,6 @@
 #include "Token.h"
 #include "Tokens.h"
 
-#include <iostream>
-
 enum GrammarType
 {
 	UNKNOWN_GRAMMAR = -1,

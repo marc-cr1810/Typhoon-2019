@@ -7,9 +7,9 @@ Parser::Parser()
 
 void Parser::Parse(Lexer* lexer)
 {
-	ProgramAST.Program = ParseTokens(lexer->GetTokens());
+	m_ProgramAST.Program = ParseTokens(lexer->GetTokens());
 
-	if (ProgramAST.Program.Type != NodeType::NODE_BLOCK)
+	if (m_ProgramAST.Program.Type != NodeType::NODE_BLOCK)
 		std::cout << "Failed To Compile Program!" << std::endl;
 }
 
@@ -126,8 +126,12 @@ Node Parser::ParseTokens(std::vector<Token> tokens)
 							}
 							i++;
 						}
-						argTokens.push_back({ TokenType::END, "\n" });
-						statement.AddChild(ParseTokens(argTokens));
+
+						if (argTokens.size() > 0)
+						{
+							argTokens.push_back({ TokenType::END, "\n" });
+							statement.AddChild(ParseTokens(argTokens));
+						}
 					}
 				}
 			}
@@ -304,8 +308,8 @@ Node Parser::RPNToAST(std::stack<Token>* stack, OperatorType opType)
 		stack->pop();
 		Node left = GetRPNNodeFromToken(stack, leftToken);
 
-		expr.AddChild(left);
 		expr.AddChild(right);
+		expr.AddChild(left);
 	}
 	else if (stack->size() == 1)
 	{
