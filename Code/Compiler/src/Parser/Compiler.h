@@ -11,7 +11,7 @@
 class Compiler
 {
 public:
-	Compiler();
+	Compiler(Ty_string_t output);
 
 	void Compile(Parser *parser);
 	void CompileASTBlock(Node block, int scope = 0);
@@ -23,6 +23,7 @@ public:
 
 	std::vector<Instruction> GetInstructions() const { return m_Instructions; }
 private:
+	Ty_string_t m_OutputPath;
 	Linker m_Linker;
 	std::vector<Instruction> m_Instructions;
 

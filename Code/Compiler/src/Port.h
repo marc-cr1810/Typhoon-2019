@@ -1,6 +1,8 @@
 #ifndef Ty_PORTS_H
 #define Ty_PORTS_H
 
+#include <iostream>
+#include <fstream>
 #include <stack>
 #include <string>
 #include <vector>

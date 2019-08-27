@@ -3,8 +3,6 @@
 
 #include "../Port.h"
 
-#include <fstream>
-
 class File {
 public:
     File(const char* filename)

@@ -1,6 +1,7 @@
 #include "Compiler.h"
 
-Compiler::Compiler()
+Compiler::Compiler(Ty_string_t output)
+	: m_OutputPath(output)
 {}
 
 void Compiler::Compile(Parser* parser)
@@ -347,4 +348,8 @@ void Compiler::BuildMachineCode()
 		for (int j = 0; j < m_Instructions[i].Bytes.size(); j++)
 			outputBytes.push_back(m_Instructions[i].Bytes[j]);
 	}
+
+	std::ofstream outputFile(m_OutputPath.c_str(), std::ios::out | std::ios::binary);
+	outputFile.write((const char*)& outputBytes[0], outputBytes.size());
+	outputFile.close();
 }

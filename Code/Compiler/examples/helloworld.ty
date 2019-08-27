@@ -25,4 +25,4 @@ func test2():
 
 test(a, b)
 
-syscall(16, c)
+syscall(0x000F, c)
