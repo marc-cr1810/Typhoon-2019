@@ -111,6 +111,11 @@ void Lexer::AddToken(Ty_string_t value)
 					return;
 				}
 				m_Tokens.push_back({ type.Type, value });
+				if (type.Type == TokenType::NUMBER)
+				{
+					if (std::regex_match(value, std::regex("^-?0x\\d*$")))
+						m_Tokens[m_Tokens.size() - 1].Value = std::to_string(std::stoi(value, nullptr, 16));
+				}
 				return;
 			}
 		}

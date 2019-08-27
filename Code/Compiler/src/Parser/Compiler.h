@@ -25,6 +25,8 @@ public:
 private:
 	Linker m_Linker;
 	std::vector<Instruction> m_Instructions;
+
+	void BuildMachineCode();
 };
 
 #endif

@@ -7,6 +7,7 @@ void Compiler::Compile(Parser* parser)
 {
 	CompileASTNode(parser->GetAST().Program);
 	m_Linker.Link(&m_Instructions);
+	BuildMachineCode();
 }
 
 void Compiler::CompileASTBlock(Node block, int scope)
@@ -196,7 +197,9 @@ void Compiler::CompileObject(Node object, int scope)
 		case ObjectType::OBJ_STRING:
 		{
 			Ty_string_t value = object.Value.substr(1, object.Value.length() - 2);
-			AddInstruction("", Bytecode::B_LDSTR, StringToVector(value));
+			std::vector<Ty_uint8_t> bytes = StringToVector(value);
+			bytes.push_back('\0');
+			AddInstruction("", Bytecode::B_LDSTR, bytes);
 		}
 			break;
 		case ObjectType::OBJ_BOOL:
@@ -333,4 +336,15 @@ void Compiler::AddInstruction(Ty_string_t label, Bytecode opcode, std::vector<Ty
 		}
 	}
 	m_Instructions.push_back({ label, opcode, bytes });
+}
+
+void Compiler::BuildMachineCode()
+{
+	std::vector<Ty_uint8_t> outputBytes;
+	for (int i = 0; i < m_Instructions.size(); i++)
+	{
+		outputBytes.push_back(m_Instructions[i].Opcode);
+		for (int j = 0; j < m_Instructions[i].Bytes.size(); j++)
+			outputBytes.push_back(m_Instructions[i].Bytes[j]);
+	}
 }

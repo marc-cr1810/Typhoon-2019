@@ -10,7 +10,7 @@ const Token TokenTypes[10] = {
 	{ TokenType::DECLARATION, "^var$" },										// Checks if the value is "var"
 	{ TokenType::STATEMENT, "^if$" },										// Checks if the value is "if"
 	{ TokenType::STATEMENT, "^else$" },										// Checks if the value is "else"
-	{ TokenType::NUMBER, "^-?\\d*$"},										// Checks if the value is only digits
+	{ TokenType::NUMBER, "^-?(0x)?\\d*$"},										// Checks if the value is only digits
 	{ TokenType::FLOAT, "^-?(?:(\\d*\\.(\\d*)?)|((\\d*)?\\.\\d*))$" },		// Checks if the value is only digits with a decimal point
 	{ TokenType::STRING, "^(?:(\".*\")|(\'.*\'))$" },						// Checks if any characters are between single or double quotes
 	{ TokenType::BOOL, "^(?:([T|t]rue)|([F|f]alse))$" },					// Checks if the value is "True", "true" or "False", "false"
