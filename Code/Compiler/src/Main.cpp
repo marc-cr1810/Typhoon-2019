@@ -16,6 +16,9 @@ int main(int argc, char** argv)
 			programFilePath = Ty_string_t(argv[i]);
 	}
 
+	if (programFilePath == "" || outputFilePath == "")
+		return 0;
+
 	File programFile(programFilePath.c_str());
 	std::cout << "Compiling Program" << std::endl;
 

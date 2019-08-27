@@ -77,6 +77,14 @@
     <OutDir>$(SolutionDir)bin\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</OutDir>
     <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</IntDir>
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>

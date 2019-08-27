@@ -69,7 +69,22 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)bin\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</OutDir>
+    <IntDir>$(SolutionDir)bin-int\$(Configuration)-$(SDKIdentifier)-$(PlatformTarget)\$(TargetName)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -123,6 +138,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Main.cpp" />
+    <ClCompile Include="src\Objects\Object.cpp" />
+    <ClCompile Include="src\VirtualMachine.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Config.h" />
+    <ClInclude Include="src\Objects\BoolObject.h" />
+    <ClInclude Include="src\Objects\DoubleObject.h" />
+    <ClInclude Include="src\Objects\FloatObject.h" />
+    <ClInclude Include="src\Objects\IntObject.h" />
+    <ClInclude Include="src\Objects\Object.h" />
+    <ClInclude Include="src\Objects\StringObject.h" />
+    <ClInclude Include="src\Objects\UIntObject.h" />
+    <ClInclude Include="src\Port.h" />
+    <ClInclude Include="src\Typhoon.h" />
+    <ClInclude Include="src\Utils\Converter.h" />
+    <ClInclude Include="src\Utils\File.h" />
+    <ClInclude Include="src\VirtualMachine.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
