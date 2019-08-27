@@ -6,6 +6,7 @@ Compiler::Compiler()
 void Compiler::Compile(Parser* parser)
 {
 	CompileASTNode(parser->GetAST().Program);
+	m_Linker.Link(&m_Instructions);
 }
 
 void Compiler::CompileASTBlock(Node block, int scope)
@@ -186,6 +187,11 @@ void Compiler::CompileObject(Node object, int scope)
 		}
 		break;
 		case ObjectType::OBJ_FLOAT:
+		{
+			float value = std::stof(object.Value);
+			std::vector<Ty_uint8_t> bytes = FloatToBytes(value);
+			AddInstruction("", Bytecode::B_LDFLOAT_S, bytes);
+		}
 			break;
 		case ObjectType::OBJ_STRING:
 		{
@@ -202,18 +208,41 @@ void Compiler::CompileObject(Node object, int scope)
 		case ObjectType::OBJ_FUNCTION_CALL:
 		{
 			Function* function = m_Linker.GetFunctionFromNameArgCount(object.Value, object.Children[0].Children.size());
-			for (int i = 0; i < object.Children[0].Children.size(); i++)
+			if (!function->InBuilt)
 			{
-				CompileASTNode(object.Children[0].Children[i], scope);
-				std::vector<Ty_uint8_t> bytes = IntToBytes(i);
-				if (bytes.size() == 1)
-					AddInstruction("", Bytecode::B_LDARG_S, bytes);
-				else if (bytes.size() == 2)
-					AddInstruction("", Bytecode::B_LDARG, bytes);
-				else if (bytes.size() == 4)
-					AddInstruction("", Bytecode::B_LDARG_L, bytes);
+				for (int i = 0; i < object.Children[0].Children.size(); i++)
+				{
+					CompileASTNode(object.Children[0].Children[i], scope);
+					std::vector<Ty_uint8_t> bytes = IntToBytes(i);
+					if (bytes.size() == 1)
+						AddInstruction("", Bytecode::B_LDARG_S, bytes);
+					else if (bytes.size() == 2)
+						AddInstruction("", Bytecode::B_LDARG, bytes);
+					else if (bytes.size() == 4)
+						AddInstruction("", Bytecode::B_LDARG_L, bytes);
+				}
+				AddInstruction("", Bytecode::B_CALL, StringToVector(function->LabelName));
 			}
-			AddInstruction("", Bytecode::B_CALL, StringToVector(function->LabelName));
+			else
+			{
+				if (function->LabelName == "F_SYSCALL")
+				{
+					Ty_uint16_t systemCallCode = std::stoi(object.Children[0].Children[0].Children[0].Value);
+
+					for (int i = 1; i < object.Children[0].Children.size(); i++)
+					{
+						CompileASTNode(object.Children[0].Children[i], scope);
+						std::vector<Ty_uint8_t> bytes = IntToBytes(i - 1);
+						if (bytes.size() == 1)
+							AddInstruction("", Bytecode::B_LDARG_S, bytes);
+						else if (bytes.size() == 2)
+							AddInstruction("", Bytecode::B_LDARG, bytes);
+						else if (bytes.size() == 4)
+							AddInstruction("", Bytecode::B_LDARG_L, bytes);
+					}
+					AddInstruction("", Bytecode::B_SYSCALL, { (Ty_uint8_t)((systemCallCode >> 8) & 0xFF), (Ty_uint8_t)(systemCallCode & 0xFF) });
+				}
+			}
 		}
 			break;
 		}

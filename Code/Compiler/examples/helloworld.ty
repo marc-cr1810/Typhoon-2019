@@ -18,8 +18,11 @@ func test(var d, var e):
 		e = 2
 	else:
 		e = 0
+	c = e
 
 func test2():
 	a = 0
 
 test(a, b)
+
+syscall(16, c)

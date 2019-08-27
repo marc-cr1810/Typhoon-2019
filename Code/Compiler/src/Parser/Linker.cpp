@@ -4,12 +4,100 @@
 
 Linker::Linker()
 {
-	m_Functions.push_back({ "syscall", "F_SYSCALL", std::vector<Ty_string_t>(), AccessType::GLOBAL, 0, true });
+	m_Functions.push_back({ "syscall", "F_SYSCALL", std::vector<Ty_string_t>(), AccessType::GLOBAL, 0, true, true });
 }
 
-void Linker::Link(Instruction machineLang)
+void Linker::Link(std::vector<Instruction>* machineLang)
 {
+	int position = 0;
 
+	// Find all branch and function locations
+	for (int i = 0; i < machineLang->size(); i++)
+	{
+		Instruction instruction = machineLang->at(i);
+		if (instruction.Label != "")
+		{
+			if (instruction.Label.substr(0, 2) == "B_")
+			{
+				Branch* branch = GetBranchFromName(instruction.Label);
+				if (position >= (pow(2, 8)))
+				{
+					for (int j = 0; j < branch->Jumps.size(); j++)
+						position++;
+				}
+				if (position >= (pow(2, 16)))
+				{
+					for (int j = 0; j < branch->Jumps.size(); j++)
+						position += 2;
+				}
+				branch->Location = position;
+				branch->LocationFound = true;
+				std::cout << "Branch " << instruction.Label << ", Pos: " << position << std::endl;
+			}
+			else if (instruction.Label.substr(0, 2) == "F_")
+			{
+				Function* func = GetFunctionFromLabel(instruction.Label);
+				func->Location = position;
+				func->LocationFound = true;
+				std::cout << "Function " << instruction.Label << ", Pos: " << position << std::endl;
+			}
+		}
+		if (instruction.Opcode == Bytecode::B_BR || instruction.Opcode == Bytecode::B_BRTRUE || instruction.Opcode == Bytecode::B_BRFALSE)
+		{
+			Ty_string_t name = VectorToString(instruction.Bytes);
+			Branch* branch = GetBranchFromName(name);
+			if (branch->LocationFound)
+				position += IntToBytes(branch->Location).size();
+			else
+				position++;
+			branch->Jumps.push_back(i);
+		}
+		else if (instruction.Opcode == Bytecode::B_CALL)
+		{
+			if (VectorToString(instruction.Bytes) == "F_SYSCALL")
+				position += 2;
+			else
+				position += 4;
+		}
+		else
+		{
+			position += instruction.Bytes.size();
+		}
+		position++;
+	}
+
+	for (int i = 0; i < machineLang->size(); i++)
+	{
+		Instruction instruction = machineLang->at(i);
+		if (instruction.Opcode == Bytecode::B_BR || instruction.Opcode == Bytecode::B_BRTRUE || instruction.Opcode == Bytecode::B_BRFALSE)
+		{
+			Ty_string_t name = VectorToString(instruction.Bytes);
+			Branch* branch = GetBranchFromName(name);
+			if (branch->LocationFound)
+			{
+				std::vector<Ty_uint8_t> bytes = IntToBytes(branch->Location);
+				Bytecode bytecode =
+					bytes.size() == 1 ? (
+						instruction.Opcode == B_BR ? Bytecode::B_BR_S :
+						instruction.Opcode == B_BRTRUE ? Bytecode::B_BRTRUE_S :
+						Bytecode::B_BRFALSE_S
+						)
+					: bytes.size() == 4 ? (
+						instruction.Opcode == B_BR ? Bytecode::B_BR_L :
+						instruction.Opcode == B_BRTRUE ? Bytecode::B_BRTRUE_L :
+						Bytecode::B_BRFALSE_L
+						)
+					: instruction.Opcode;
+				machineLang->at(i).Opcode = bytecode;
+				machineLang->at(i).Bytes = bytes;
+			}
+		}
+		else if (instruction.Opcode == Bytecode::B_CALL)
+		{
+			Function* func = GetFunctionFromLabel(VectorToString(instruction.Bytes));
+			machineLang->at(i).Bytes = IntToBytes(func->Location);
+		}
+	}
 }
 
 Function* Linker::AddFunction(Ty_string_t name, Ty_string_t labelName, std::vector<Ty_string_t> args, AccessType access, int scope)
@@ -91,7 +179,7 @@ Function* Linker::GetFunctionFromNameArgCount(Ty_string_t name, int argCount)
 
 	for (int i = 0; i < m_Functions.size(); i++)
 	{
-		if (m_Functions[i].Name == name && m_Functions[i].Args.size() == argCount)
+		if (m_Functions[i].Name == name && (m_Functions[i].Args.size() == argCount || m_Functions[i].IgnoreArgCount))
 		{
 			if (m_Functions[i].Access == AccessType::LOCAL)
 				return &m_Functions[i];
@@ -102,6 +190,23 @@ Function* Linker::GetFunctionFromNameArgCount(Ty_string_t name, int argCount)
 
 	if (function == nullptr)
 		std::cout << "Error: Undefined function \"" << name << "\"" << std::endl;
+	return function;
+}
+
+Function* Linker::GetFunctionFromLabel(Ty_string_t label)
+{
+	Function* function = nullptr;
+
+	for (int i = 0; i < m_Functions.size(); i++)
+	{
+		if (m_Functions[i].LabelName == label)
+		{
+			function = &m_Functions[i];
+		}
+	}
+
+	if (function == nullptr)
+		std::cout << "Error: Unknown function label \"" << label << "\"" << std::endl;
 	return function;
 }
 
@@ -129,4 +234,21 @@ VariableType Linker::GetVarTypeFromLabel(Ty_string_t label)
 {
 	Ty_string_t type = label.substr(0, 2);
 	return type == "VA" ? VariableType::VAR_ARGUMENT : type == "VL" ? VariableType::VAR_LOCAL : VariableType::VAR_GLOBAL;
+}
+
+Branch* Linker::GetBranchFromName(Ty_string_t name)
+{
+	Branch* branch = nullptr;
+
+	for (int i = 0; i < m_Branches.size(); i++)
+	{
+		if (m_Branches[i].Name == name)
+		{
+			branch = &m_Branches[i];
+		}
+	}
+
+	if (branch == nullptr)
+		std::cout << "Error: Unknown branch \"" << name << "\"" << std::endl;
+	return branch;
 }
