@@ -10,8 +10,13 @@ public:
 
 	void Run(File file);
 private:
-	Ty_uint64_t m_PC;
+	Ty_uint64_t m_PC = 0;
 	std::vector<char> m_Bytecode;
+
+	std::stack<TyObject> m_Stack;
+	std::stack<Ty_uint64_t> m_ReturnPositions;
+
+	std::vector<TyObject> m_GlobalVars;
 };
 
 #endif
