@@ -357,7 +357,8 @@ Node Parser::GetRPNNodeFromToken(std::stack<Token>* stack, Token token)
 			}
 			i++;
 		}
-		argTokens.push_back({ TokenType::END, "\n" });
+		if (argTokens.size() > 0)
+			argTokens.push_back({ TokenType::END, "\n" });
 		node.AddChild(ParseTokens(argTokens));
 	}
 	else

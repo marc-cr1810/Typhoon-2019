@@ -283,29 +283,21 @@ bool operator==(const TyObject& left, const TyObject& right)
 	switch (left.Type)
 	{
 	case OBJECT_NULL:
-		left.Type == right.Type;
-		break;
+		return left.Type == right.Type;
 	case OBJECT_INT:
-		left.ValueInt == right.ValueInt;
-		break;
+		return left.ValueInt == right.ValueInt;
 	case OBJECT_UINT:
-		left.ValueUInt == right.ValueUInt;
-		break;
+		return left.ValueUInt == right.ValueUInt;
 	case OBJECT_FLOAT:
-		left.ValueFloat == right.ValueFloat;
-		break;
+		return left.ValueFloat == right.ValueFloat;
 	case OBJECT_DOUBLE:
-		left.ValueDouble == right.ValueDouble;
-		break;
+		return left.ValueDouble == right.ValueDouble;
 	case OBJECT_STRING:
-		left.ValueString == right.ValueString;
-		break;
+		return left.ValueString == right.ValueString;
 	case OBJECT_BOOL:
-		left.ValueBool == right.ValueBool;
-		break;
+		return left.ValueBool == right.ValueBool;
 	default:
 		return false;
-		break;
 	}
 }
 
@@ -319,29 +311,21 @@ bool operator>(const TyObject& left, const TyObject& right)
 	switch (left.Type)
 	{
 	case OBJECT_NULL:
-		left.Type > right.Type;
-		break;
+		return left.Type > right.Type;
 	case OBJECT_INT:
-		left.ValueInt > right.ValueInt;
-		break;
+		return left.ValueInt > right.ValueInt;
 	case OBJECT_UINT:
-		left.ValueUInt > right.ValueUInt;
-		break;
+		return left.ValueUInt > right.ValueUInt;
 	case OBJECT_FLOAT:
-		left.ValueFloat > right.ValueFloat;
-		break;
+		return left.ValueFloat > right.ValueFloat;
 	case OBJECT_DOUBLE:
-		left.ValueDouble > right.ValueDouble;
-		break;
+		return left.ValueDouble > right.ValueDouble;
 	case OBJECT_STRING:
-		left.ValueString.size() > right.ValueString.size();
-		break;
+		return left.ValueString.size() > right.ValueString.size();
 	case OBJECT_BOOL:
-		left.ValueBool > right.ValueBool;
-		break;
+		return left.ValueBool > right.ValueBool;
 	default:
 		return false;
-		break;
 	}
 }
 
@@ -350,29 +334,21 @@ bool operator<(const TyObject& left, const TyObject& right)
 	switch (left.Type)
 	{
 	case OBJECT_NULL:
-		left.Type < right.Type;
-		break;
+		return left.Type < right.Type;
 	case OBJECT_INT:
-		left.ValueInt < right.ValueInt;
-		break;
+		return left.ValueInt < right.ValueInt;
 	case OBJECT_UINT:
-		left.ValueUInt < right.ValueUInt;
-		break;
+		return left.ValueUInt < right.ValueUInt;
 	case OBJECT_FLOAT:
-		left.ValueFloat < right.ValueFloat;
-		break;
+		return left.ValueFloat < right.ValueFloat;
 	case OBJECT_DOUBLE:
-		left.ValueDouble < right.ValueDouble;
-		break;
+		return left.ValueDouble < right.ValueDouble;
 	case OBJECT_STRING:
-		left.ValueString.size() < right.ValueString.size();
-		break;
+		return left.ValueString.size() < right.ValueString.size();
 	case OBJECT_BOOL:
-		left.ValueBool < right.ValueBool;
-		break;
+		return left.ValueBool < right.ValueBool;
 	default:
 		return false;
-		break;
 	}
 }
 

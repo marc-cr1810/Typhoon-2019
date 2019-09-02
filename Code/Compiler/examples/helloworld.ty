@@ -4,5 +4,19 @@
 # and to begin its development in its
 # early stages.
 
-var msg = "Hello World!"
-syscall(0x000F, msg)
+
+var a = 9
+var b = 2
+var msg
+
+func print():
+	syscall(0x0F, msg)
+
+if a < 2:
+	msg = "'a' is less than 2"
+else if a == 2:
+	msg = "'a' is equal to 2"
+else:
+	msg = "'a' is greater than 2"
+
+print()

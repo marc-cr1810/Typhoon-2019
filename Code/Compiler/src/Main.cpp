@@ -11,7 +11,12 @@ int main(int argc, char** argv)
 	for (int i = 1; i < argc; ++i)
 	{
 		if (Ty_string_t(argv[i]) == "-o")
-			outputFilePath = Ty_string_t(argv[++i]);
+		{
+			if (i + 1 < argc)
+			{
+				outputFilePath = Ty_string_t(argv[++i]);
+			}
+		}
 		else
 			programFilePath = Ty_string_t(argv[i]);
 	}

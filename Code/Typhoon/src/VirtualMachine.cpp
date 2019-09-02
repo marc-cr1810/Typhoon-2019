@@ -24,7 +24,7 @@ void VirtualMachine::Run(File file)
 				break;
 			case B_STARG_S:
 			{
-
+				m_PC += 2;
 			}
 				break;
 			case B_LDARG:
@@ -139,6 +139,7 @@ void VirtualMachine::Run(File file)
 				break;
 			case B_LDNULL:
 				m_Stack.push({ ObjectType::OBJECT_NULL });
+				m_PC++;
 				break;
 			case B_LDCONST_S:
 			{
@@ -303,15 +304,18 @@ void VirtualMachine::Run(File file)
 			{
 				TyObject object = m_Stack.top();
 				m_Stack.push(object);
+				m_PC++;
 			}
 				break;
 			case B_POP:
-				m_Stack.pop();
+				if (m_Stack.size() > 0)
+					m_Stack.pop();
+				m_PC++;
 				break;
 			case B_CALL:
 			{
-				m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 				m_ReturnPositions.push(m_PC + 5);
+				m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 			}
 				break;
 			case B_RET:
@@ -332,6 +336,7 @@ void VirtualMachine::Run(File file)
 				TyObject right = m_Stack.top();
 				m_Stack.pop();
 				m_Stack.push(left + right);
+				m_PC++;
 			}
 				break;
 			case B_SUB:
@@ -341,6 +346,7 @@ void VirtualMachine::Run(File file)
 				TyObject right = m_Stack.top();
 				m_Stack.pop();
 				m_Stack.push(left - right);
+				m_PC++;
 			}
 				break;
 			case B_MUL:
@@ -350,6 +356,7 @@ void VirtualMachine::Run(File file)
 				TyObject right = m_Stack.top();
 				m_Stack.pop();
 				m_Stack.push(left * right);
+				m_PC++;
 			}
 				break;
 			case B_DIV:
@@ -359,6 +366,7 @@ void VirtualMachine::Run(File file)
 				TyObject right = m_Stack.top();
 				m_Stack.pop();
 				m_Stack.push(left / right);
+				m_PC++;
 			}
 				break;
 			case B_REM:
@@ -368,6 +376,7 @@ void VirtualMachine::Run(File file)
 				TyObject right = m_Stack.top();
 				m_Stack.pop();
 				m_Stack.push(left % right);
+				m_PC++;
 			}
 				break;
 			case B_CEQ:
@@ -379,6 +388,7 @@ void VirtualMachine::Run(File file)
 				TyObject object;
 				object.Set(left == right);
 				m_Stack.push(object);
+				m_PC++;
 			}
 				break;
 			case B_CNEQ:
@@ -390,6 +400,7 @@ void VirtualMachine::Run(File file)
 				TyObject object;
 				object.Set(left != right);
 				m_Stack.push(object);
+				m_PC++;
 			}
 				break;
 			case B_CGT:
@@ -401,6 +412,7 @@ void VirtualMachine::Run(File file)
 				TyObject object;
 				object.Set(left > right);
 				m_Stack.push(object);
+				m_PC++;
 			}
 				break;
 			case B_CLT:
@@ -412,6 +424,7 @@ void VirtualMachine::Run(File file)
 				TyObject object;
 				object.Set(left < right);
 				m_Stack.push(object);
+				m_PC++;
 			}
 				break;
 			case B_CGTEQ:
@@ -423,6 +436,7 @@ void VirtualMachine::Run(File file)
 				TyObject object;
 				object.Set(left >= right);
 				m_Stack.push(object);
+				m_PC++;
 			}
 				break;
 			case B_CLTEQ:
@@ -434,6 +448,7 @@ void VirtualMachine::Run(File file)
 				TyObject object;
 				object.Set(left <= right);
 				m_Stack.push(object);
+				m_PC++;
 			}
 				break;
 			case B_SYSCALL:
@@ -489,7 +504,6 @@ void VirtualMachine::Syscall(SyscallCode code)
 		break;
 	case SYS_CONSOLE_WRITE:
 		std::cout << m_Stack.top().ValueString;
-		m_Stack.pop();
 		break;
 	default:
 		break;
