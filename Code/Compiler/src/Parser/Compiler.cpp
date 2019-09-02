@@ -47,9 +47,14 @@ void Compiler::CompileASTNode(Node ast, int scope)
 
 				m_Linker.AddFunction(name, label, args, scope == 0 ? AccessType::GLOBAL : AccessType::LOCAL, scope);
 
+				Branch endPoint = *m_Linker.AddBranch();
+				AddInstruction("", Bytecode::B_BR, StringToVector(endPoint.Name));
+
 				int startPoint = m_Instructions.size();
 				CompileASTBlock(node.Children[args.size() > 0 ? 1 : 0], scope + 1);
 				AddInstruction("", Bytecode::B_RET);
+
+				AddInstruction(endPoint.Name, Bytecode::B_NOP);
 				m_Instructions[startPoint].Label = label;
 				
 				std::cout << label << ": " << name << std::endl;
@@ -125,10 +130,12 @@ void Compiler::CompileASTNode(Node ast, int scope)
 				else if (bytes.size() == 4)
 					bytecode = scope == 0 ? Bytecode::B_STORE_L : Bytecode::B_STLOC_L;
 				AddInstruction("", bytecode, bytes);
+				AddInstruction("", Bytecode::B_POP, std::vector<Ty_uint8_t>());
 			}
 			else if (node.StmtType == StatementType::EXPRESSION)
 			{
 				CompileASTNode(node.Children[0], scope);
+				AddInstruction("", Bytecode::B_POP, std::vector<Ty_uint8_t>());
 			}
 		}
 		else if (node.Type == NodeType::NODE_EXPRESSION)
@@ -238,11 +245,11 @@ void Compiler::CompileObject(Node object, int scope)
 						CompileASTNode(object.Children[0].Children[i], scope);
 						std::vector<Ty_uint8_t> bytes = IntToBytes(i - 1);
 						if (bytes.size() == 1)
-							AddInstruction("", Bytecode::B_LDARG_S, bytes);
+							AddInstruction("", Bytecode::B_STARG_S, bytes);
 						else if (bytes.size() == 2)
-							AddInstruction("", Bytecode::B_LDARG, bytes);
+							AddInstruction("", Bytecode::B_STARG, bytes);
 						else if (bytes.size() == 4)
-							AddInstruction("", Bytecode::B_LDARG_L, bytes);
+							AddInstruction("", Bytecode::B_STARG_L, bytes);
 					}
 					AddInstruction("", Bytecode::B_SYSCALL, { (Ty_uint8_t)((systemCallCode >> 8) & 0xFF), (Ty_uint8_t)(systemCallCode & 0xFF) });
 				}
@@ -329,7 +336,7 @@ void Compiler::AddInstruction(Ty_string_t label, Bytecode opcode, std::vector<Ty
 {
 	if (m_Instructions.size() > 0)
 	{
-		if (m_Instructions[m_Instructions.size() - 1].Opcode == Bytecode::B_NOP && m_Instructions[m_Instructions.size() - 1].Label != "")
+		if (m_Instructions[m_Instructions.size() - 1].Opcode == Bytecode::B_NOP && m_Instructions[m_Instructions.size() - 1].Label != "" && label == "")
 		{
 			m_Instructions[m_Instructions.size() - 1].Opcode = opcode;
 			m_Instructions[m_Instructions.size() - 1].Bytes = bytes;

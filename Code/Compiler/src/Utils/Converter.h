@@ -36,10 +36,10 @@ static std::vector<Ty_uint8_t> FloatToBytes(float value)
 	std::vector<Ty_uint8_t> bytes;
 	unsigned long d = *(unsigned long*)&value;
 
-	bytes.push_back(d & 0x00FF);
-	bytes.push_back((d & 0xFF00) >> 8);
-	bytes.push_back((d & 0xFF0000) >> 16);
 	bytes.push_back((d & 0xFF000000) >> 24);
+	bytes.push_back((d & 0xFF0000) >> 16);
+	bytes.push_back((d & 0xFF00) >> 8);
+	bytes.push_back(d & 0x00FF);
 	return bytes;
 }
 

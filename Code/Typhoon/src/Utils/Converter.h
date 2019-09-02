@@ -25,10 +25,10 @@ static float BytesToFloat(std::vector<Ty_uint8_t> bytes)
 {
 	float member = 0.0;
 
-	member += (float)(bytes[0]);
-	member += (float)(bytes[1] << 8);
-	member += (float)(bytes[2] << 16);
-	member += (float)(bytes[3] << 24);
+	member += (float)(bytes[0] << 24);
+	member += (float)(bytes[1] << 16);
+	member += (float)(bytes[2] << 8);
+	member += (float)(bytes[3]);
 
 	return member;
 }

@@ -23,26 +23,59 @@ void VirtualMachine::Run(File file)
 			}
 				break;
 			case B_STARG_S:
+			{
+
+			}
 				break;
 			case B_LDARG:
+			{
+
+			}
 				break;
 			case B_STARG:
+			{
+
+			}
 				break;
 			case B_LDARG_L:
+			{
+
+			}
 				break;
 			case B_STARG_L:
+			{
+
+			}
 				break;
 			case B_LDLOC_S:
+			{
+
+			}
 				break;
 			case B_STLOC_S:
+			{
+
+			}
 				break;
 			case B_LDLOC:
+			{
+
+			}
 				break;
 			case B_STLOC:
+			{
+
+			}
 				break;
 			case B_LDLOC_L:
+			{
+
+			}
 				break;
 			case B_STLOC_L:
+			{
+
+			}
 				break;
 			case B_LOAD_S:
 			{
@@ -58,15 +91,9 @@ void VirtualMachine::Run(File file)
 			{
 				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
 				if (index < m_GlobalVars.size())
-				{
 					m_GlobalVars[index] = m_Stack.top();
-					m_Stack.pop();
-				}
 				else
-				{
 					m_GlobalVars.push_back(m_Stack.top());
-					m_Stack.pop();
-				}
 				m_PC += 2;
 			}
 				break;
@@ -84,15 +111,9 @@ void VirtualMachine::Run(File file)
 			{
 				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
 				if (index < m_GlobalVars.size())
-				{
 					m_GlobalVars[index] = m_Stack.top();
-					m_Stack.pop();
-				}
 				else
-				{
 					m_GlobalVars.push_back(m_Stack.top());
-					m_Stack.pop();
-				}
 				m_PC += 3;
 			}
 				break;
@@ -110,15 +131,9 @@ void VirtualMachine::Run(File file)
 			{
 				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 				if (index < m_GlobalVars.size())
-				{
 					m_GlobalVars[index] = m_Stack.top();
-					m_Stack.pop();
-				}
 				else
-				{
 					m_GlobalVars.push_back(m_Stack.top());
-					m_Stack.pop();
-				}
 				m_PC += 5;
 			}
 				break;
@@ -422,6 +437,11 @@ void VirtualMachine::Run(File file)
 			}
 				break;
 			case B_SYSCALL:
+			{
+				SyscallCode code = (SyscallCode)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
+				Syscall(code);
+				m_PC += 3;
+			}
 				break;
 			default:
 				m_PC++;
@@ -430,5 +450,48 @@ void VirtualMachine::Run(File file)
 		}
 		else
 			m_PC++;
+	}
+}
+
+void VirtualMachine::Syscall(SyscallCode code)
+{
+	switch (code)
+	{
+	case SYS_NOP:
+		return;
+	case SYS_EXIT:
+		break;
+	case SYS_KILL:
+		break;
+	case SYS_BREAK:
+		break;
+	case SYS_FILE_READ:
+		break;
+	case SYS_FILE_WRITE:
+		break;
+	case SYS_FILE_DELETE:
+		break;
+	case SYS_DIR_MAKE:
+		break;
+	case SYS_DIR_DELETE:
+		break;
+	case SYS_CLOCK_GETTIME:
+		break;
+	case SYS_THREAD_SLEEP:
+		break;
+	case SYS_THREAD_SLEEPMICRO:
+		break;
+	case SYS_THREAD_SLEEPNANO:
+		break;
+	case SYS_CONSOLE_READ:
+		break;
+	case SYS_CONSOLE_READLINE:
+		break;
+	case SYS_CONSOLE_WRITE:
+		std::cout << m_Stack.top().ValueString;
+		m_Stack.pop();
+		break;
+	default:
+		break;
 	}
 }

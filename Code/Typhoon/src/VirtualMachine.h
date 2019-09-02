@@ -17,6 +17,8 @@ private:
 	std::stack<Ty_uint64_t> m_ReturnPositions;
 
 	std::vector<TyObject> m_GlobalVars;
+
+	void Syscall(SyscallCode code);
 };
 
 #endif
