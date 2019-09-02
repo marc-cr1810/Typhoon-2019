@@ -193,8 +193,8 @@ Function* Linker::GetFunctionFromNameArgCount(Ty_string_t name, int argCount)
 		}
 	}
 
-	if (function == nullptr)
-		std::cout << "Error: Undefined function \"" << name << "\"" << std::endl;
+	//if (function == nullptr)
+	//	std::cout << "Error: Undefined function \"" << name << "\"" << std::endl;
 	return function;
 }
 
@@ -202,6 +202,21 @@ Function* Linker::GetFunctionFromLabel(Ty_string_t label)
 {
 	Function* function = nullptr;
 
+	if (label.size() > 4)
+	{
+		if (label.substr(0, 4) == "UDF_")
+		{
+			int i = 4;
+			Ty_string_t argCount = "";
+			while (label[i] != '_')
+				argCount += label[i++];
+			Ty_string_t name = "";
+			i++;
+			while (i < label.size())
+				name += label[i++];
+			return GetFunctionFromNameArgCount(name, std::stoi(argCount));
+		}
+	}
 	for (int i = 0; i < m_Functions.size(); i++)
 	{
 		if (m_Functions[i].LabelName == label)

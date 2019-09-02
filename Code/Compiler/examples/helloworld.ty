@@ -4,13 +4,9 @@
 # and to begin its development in its
 # early stages.
 
-
 var a = 9
 var b = 2
 var msg
-
-func print():
-	syscall(0x0F, msg)
 
 if a < 2:
 	msg = "'a' is less than 2"
@@ -20,3 +16,9 @@ else:
 	msg = "'a' is greater than 2"
 
 print()
+
+msg = a + b
+print()
+
+func print():
+	syscall(0x0F, msg)
