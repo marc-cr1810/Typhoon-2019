@@ -1,7 +1,10 @@
 #include "VirtualMachine.h"
 
 VirtualMachine::VirtualMachine()
-{}
+{
+	m_LocalVars.push_back(std::vector<TyObject>());
+	m_ArgVars.push_back(std::vector<TyObject>());
+}
 
 void VirtualMachine::Run(File file)
 {
@@ -19,121 +22,127 @@ void VirtualMachine::Run(File file)
 				break;
 			case B_LDARG_S:
 			{
-
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
+				LoadArgVarToStack(index);
+				m_PC += 2;
 			}
 				break;
 			case B_STARG_S:
 			{
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
+				StoreArgVarFromStack(index);
 				m_PC += 2;
 			}
 				break;
 			case B_LDARG:
 			{
-
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
+				LoadArgVarToStack(index);
+				m_PC += 3;
 			}
 				break;
 			case B_STARG:
 			{
-
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
+				StoreArgVarFromStack(index);
+				m_PC += 3;
 			}
 				break;
 			case B_LDARG_L:
 			{
-
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
+				LoadArgVarToStack(index);
+				m_PC += 5;
 			}
 				break;
 			case B_STARG_L:
 			{
-
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
+				StoreArgVarFromStack(index);
+				m_PC += 5;
 			}
 				break;
 			case B_LDLOC_S:
 			{
-
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
+				LoadLocalVarToStack(index);
+				m_PC += 2;
 			}
 				break;
 			case B_STLOC_S:
 			{
-
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
+				StoreLocalVarFromStack(index);
+				m_PC += 2;
 			}
 				break;
 			case B_LDLOC:
 			{
-
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
+				LoadLocalVarToStack(index);
+				m_PC += 3;
 			}
 				break;
 			case B_STLOC:
 			{
-
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
+				StoreLocalVarFromStack(index);
+				m_PC += 3;
 			}
 				break;
 			case B_LDLOC_L:
 			{
-
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
+				LoadLocalVarToStack(index);
+				m_PC += 5;
 			}
 				break;
 			case B_STLOC_L:
 			{
-
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
+				StoreLocalVarFromStack(index);
+				m_PC += 5;
 			}
 				break;
 			case B_LOAD_S:
 			{
 				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
-				if (index < m_GlobalVars.size())
-					m_Stack.push(m_GlobalVars[index]);
-				else
-					std::cout << "Inaccessible memory location, missing variable!" << std::endl;
+				LoadGlobalVarToStack(index);
 				m_PC += 2;
 			}
 				break;
 			case B_STORE_S:
 			{
 				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
-				if (index < m_GlobalVars.size())
-					m_GlobalVars[index] = m_Stack.top();
-				else
-					m_GlobalVars.push_back(m_Stack.top());
+				StoreGlobalVarFromStack(index);
 				m_PC += 2;
 			}
 				break;
 			case B_LOAD:
 			{
 				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
-				if (index < m_GlobalVars.size())
-					m_Stack.push(m_GlobalVars[index]);
-				else
-					std::cout << "Inaccessible memory location, missing variable!" << std::endl;
+				LoadGlobalVarToStack(index);
 				m_PC += 3;
 			}
 				break;
 			case B_STORE:
 			{
 				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
-				if (index < m_GlobalVars.size())
-					m_GlobalVars[index] = m_Stack.top();
-				else
-					m_GlobalVars.push_back(m_Stack.top());
+				StoreGlobalVarFromStack(index);
 				m_PC += 3;
 			}
 				break;
 			case B_LOAD_L:
 			{
 				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
-				if (index < m_GlobalVars.size())
-					m_Stack.push(m_GlobalVars[index]);
-				else
-					std::cout << "Inaccessible memory location, missing variable!" << std::endl;
+				LoadGlobalVarToStack(index);
 				m_PC += 5;
 			}
 				break;
 			case B_STORE_L:
 			{
 				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
-				if (index < m_GlobalVars.size())
-					m_GlobalVars[index] = m_Stack.top();
-				else
-					m_GlobalVars.push_back(m_Stack.top());
+				StoreGlobalVarFromStack(index);
 				m_PC += 5;
 			}
 				break;
