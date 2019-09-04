@@ -130,12 +130,17 @@ void Compiler::CompileASTNode(Node ast, int scope)
 				else if (bytes.size() == 4)
 					bytecode = scope == 0 ? Bytecode::B_STORE_L : Bytecode::B_STLOC_L;
 				AddInstruction("", bytecode, bytes);
-				AddInstruction("", Bytecode::B_POP, std::vector<Ty_uint8_t>());
 			}
 			else if (node.StmtType == StatementType::EXPRESSION)
 			{
 				CompileASTNode(node.Children[0], scope);
-				AddInstruction("", Bytecode::B_POP, std::vector<Ty_uint8_t>());
+				Instruction last = m_Instructions[m_Instructions.size() - 1];
+				if (last.Opcode != Bytecode::B_STARG_S && last.Opcode != Bytecode::B_STARG && last.Opcode != Bytecode::B_STARG_L &&
+					last.Opcode != Bytecode::B_STLOC_S && last.Opcode != Bytecode::B_STLOC && last.Opcode != Bytecode::B_STLOC_L &&
+					last.Opcode != Bytecode::B_STORE_S && last.Opcode != Bytecode::B_STORE && last.Opcode != Bytecode::B_STORE_L)
+				{
+					AddInstruction("", Bytecode::B_POP, std::vector<Ty_uint8_t>());
+				}
 			}
 		}
 		else if (node.Type == NodeType::NODE_EXPRESSION)
@@ -228,11 +233,11 @@ void Compiler::CompileObject(Node object, int scope)
 						CompileASTNode(object.Children[0].Children[i], scope);
 						std::vector<Ty_uint8_t> bytes = IntToBytes(i);
 						if (bytes.size() == 1)
-							AddInstruction("", Bytecode::B_LDARG_S, bytes);
+							AddInstruction("", Bytecode::B_STARG_S, bytes);
 						else if (bytes.size() == 2)
-							AddInstruction("", Bytecode::B_LDARG, bytes);
+							AddInstruction("", Bytecode::B_STARG, bytes);
 						else if (bytes.size() == 4)
-							AddInstruction("", Bytecode::B_LDARG_L, bytes);
+							AddInstruction("", Bytecode::B_STARG_L, bytes);
 					}
 					AddInstruction("", Bytecode::B_CALL, StringToVector(function->LabelName));
 				}

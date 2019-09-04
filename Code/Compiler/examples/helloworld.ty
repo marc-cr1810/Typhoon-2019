@@ -4,21 +4,16 @@
 # and to begin its development in its
 # early stages.
 
-var a = 9
-var b = 2
+var a = -255
 var msg
 
-if a < 2:
-	msg = "'a' is less than 2"
-else if a == 2:
-	msg = "'a' is equal to 2"
+syscall(0x0F, "a: " + a + ", ")
+
+if a < -5:
+	msg = "a < -5"
+else if a == -5:
+	msg = "a == -5"
 else:
-	msg = "'a' is greater than 2"
+	msg = "a > -5"
 
-print()
-
-msg = a + b
-print()
-
-func print():
-	syscall(0x0F, msg)
+syscall(0x0F, msg)

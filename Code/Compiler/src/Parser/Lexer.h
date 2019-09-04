@@ -34,7 +34,9 @@ private:
 	Ty_string_t m_Comment = "#.*";		// Regex for a comment
 
 	// Rules to check the current token value against to see if it is a valid operator (checks the next character after the operator)
-	Ty_string_t m_OperatorExclusionRules[1] = {
+	Ty_string_t m_OperatorExclusionRules[3] = {
+		"^(?:(\".*[^\"])|(\'.*[^\']))$", 		// Checks if the token value is the beginning of a string
+		"^#.*$",								// Check if the token is a comment
 		"^-\\d$", 			// Checks if the token value is a negative number
 	};
 };

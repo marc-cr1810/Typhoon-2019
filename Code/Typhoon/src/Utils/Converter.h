@@ -13,7 +13,7 @@ static Ty_string_t VectorToString(std::vector<Ty_uint8_t> vector)
 	return Ty_string_t(vector.begin(), vector.end());
 }
 
-static int BytesToInt(std::vector<Ty_uint8_t> bytes)
+static int BytesToInt(std::vector<Ty_int8_t> bytes)
 {
 	int result = 0;
 	for (unsigned n = 0; n < bytes.size(); n++)

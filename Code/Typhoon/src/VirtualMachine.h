@@ -52,6 +52,7 @@ private:
 			m_GlobalVars[index] = m_Stack.top();
 		else
 			m_GlobalVars.push_back(m_Stack.top());
+		m_Stack.pop();
 	}
 
 	void LoadLocalVarToStack(int index)
@@ -68,6 +69,7 @@ private:
 			m_LocalVars[m_LocalVars.size() - 1][index] = m_Stack.top();
 		else
 			m_LocalVars[m_LocalVars.size() - 1].push_back(m_Stack.top());
+		m_Stack.pop();
 	}
 
 	void LoadArgVarToStack(int index)
@@ -84,6 +86,7 @@ private:
 			m_ArgVars[m_ArgVars.size() - 1][index] = m_Stack.top();
 		else
 			m_ArgVars[m_ArgVars.size() - 1].push_back(m_Stack.top());
+		m_Stack.pop();
 	}
 };
 
