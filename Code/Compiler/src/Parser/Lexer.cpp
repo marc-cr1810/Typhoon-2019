@@ -39,8 +39,17 @@ void Lexer::TokenizeString(Ty_string_t string)
 			{
 				for (Ty_string_t rule : m_OperatorExclusionRules)
 				{
-					if (std::regex_match(tokenValue + byte, std::regex(rule)))
-						goto SkipSeparator;
+					
+					if (!(tokenValue[0] == '\"' && tokenValue[tokenValue.size() - 1] == '\"') && !(tokenValue[0] == '\'' && tokenValue[tokenValue.size() - 1] == '\''))
+					{
+						if (std::regex_match(tokenValue + byte, std::regex(rule)))
+							goto SkipSeparator;
+					}
+					else
+					{
+						if (tokenValue.size() <= 1)
+							goto SkipSeparator;
+					}
 				}
 				AddToken(tokenValue);
 				tokenValue = byte;

@@ -7,7 +7,7 @@
 var a = -255
 var msg
 
-syscall(0x0F, "a: " + a + ", ")
+print("a: " + a + ", ")
 
 if a < -5:
 	msg = "a < -5"
@@ -16,4 +16,8 @@ else if a == -5:
 else:
 	msg = "a > -5"
 
-syscall(0x0F, msg)
+print(msg)
+
+
+func print(var text):
+	syscall(0x0F, text)

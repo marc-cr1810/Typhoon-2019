@@ -8,6 +8,7 @@ int main(int argc, char** argv)
 {
 	Ty_string_t programFilePath = "";
 	Ty_string_t outputFilePath = "";
+
 	for (int i = 1; i < argc; ++i)
 	{
 		if (Ty_string_t(argv[i]) == "-o")
