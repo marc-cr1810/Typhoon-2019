@@ -15,14 +15,14 @@ static Ty_string_t VectorToString(std::vector<Ty_uint8_t> vector)
 
 static std::vector<Ty_uint8_t> IntToBytes(int value)
 {
-	if (abs(value) < (pow(2, 8)))
+	if (abs(value) < ((pow(2, 8) - 1) / (value < 0 ? 2 : 1) - 1))
 		return { (Ty_uint8_t)(value & 0xFF) };
-	else if (abs(value) < (pow(2, 16)))
+	else if (abs(value) < (pow(2, 16) / (value < 0 ? 2 : 1) - 1))
 		return {
 				(Ty_uint8_t)((value >> 8) & 0xFF),
 				(Ty_uint8_t)(value & 0xFF)
 			};
-	else if (abs(value) < (pow(2, 32)))
+	else if (abs(value) < (pow(2, 32) / (value < 0 ? 2 : 1) - 1))
 		return {
 				(Ty_uint8_t)((value >> 24) & 0xFF),
 				(Ty_uint8_t)((value >> 16) & 0xFF),

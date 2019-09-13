@@ -224,14 +224,35 @@ void Compiler::CompileObject(Node object, int scope)
 		case ObjectType::OBJ_FUNCTION_CALL:
 		{
 			Function* function = m_Linker.GetFunctionFromNameArgCount(object.Value, object.Children[0].Children.size());
-			if (function != nullptr)
+			bool inBuilt = function != nullptr ? function->InBuilt : false;
+			if (!inBuilt)
 			{
-				if (!function->InBuilt)
+				for (int i = 0; i < object.Children[0].Children.size(); i++)
 				{
-					for (int i = 0; i < object.Children[0].Children.size(); i++)
+					CompileASTNode(object.Children[0].Children[i], scope);
+					std::vector<Ty_uint8_t> bytes = IntToBytes(i);
+					if (bytes.size() == 1)
+						AddInstruction("", Bytecode::B_STARG_S, bytes);
+					else if (bytes.size() == 2)
+						AddInstruction("", Bytecode::B_STARG, bytes);
+					else if (bytes.size() == 4)
+						AddInstruction("", Bytecode::B_STARG_L, bytes);
+				}
+				if (function != nullptr)
+					AddInstruction("", Bytecode::B_CALL, StringToVector(function->LabelName));
+				else
+					AddInstruction("", Bytecode::B_CALL, StringToVector("UDF_" + std::to_string(object.Children[0].Children.size()) + "_" + object.Value));
+			}
+			else
+			{
+				if (function->LabelName == "F_SYSCALL")
+				{
+					Ty_uint16_t systemCallCode = std::stoi(object.Children[0].Children[0].Children[0].Value);
+
+					for (int i = 1; i < object.Children[0].Children.size(); i++)
 					{
 						CompileASTNode(object.Children[0].Children[i], scope);
-						std::vector<Ty_uint8_t> bytes = IntToBytes(i);
+						std::vector<Ty_uint8_t> bytes = IntToBytes(i - 1);
 						if (bytes.size() == 1)
 							AddInstruction("", Bytecode::B_STARG_S, bytes);
 						else if (bytes.size() == 2)
@@ -239,32 +260,8 @@ void Compiler::CompileObject(Node object, int scope)
 						else if (bytes.size() == 4)
 							AddInstruction("", Bytecode::B_STARG_L, bytes);
 					}
-					AddInstruction("", Bytecode::B_CALL, StringToVector(function->LabelName));
+					AddInstruction("", Bytecode::B_SYSCALL, { (Ty_uint8_t)((systemCallCode >> 8) & 0xFF), (Ty_uint8_t)(systemCallCode & 0xFF) });
 				}
-				else
-				{
-					if (function->LabelName == "F_SYSCALL")
-					{
-						Ty_uint16_t systemCallCode = std::stoi(object.Children[0].Children[0].Children[0].Value);
-
-						for (int i = 1; i < object.Children[0].Children.size(); i++)
-						{
-							CompileASTNode(object.Children[0].Children[i], scope);
-							std::vector<Ty_uint8_t> bytes = IntToBytes(i - 1);
-							if (bytes.size() == 1)
-								AddInstruction("", Bytecode::B_STARG_S, bytes);
-							else if (bytes.size() == 2)
-								AddInstruction("", Bytecode::B_STARG, bytes);
-							else if (bytes.size() == 4)
-								AddInstruction("", Bytecode::B_STARG_L, bytes);
-						}
-						AddInstruction("", Bytecode::B_SYSCALL, { (Ty_uint8_t)((systemCallCode >> 8) & 0xFF), (Ty_uint8_t)(systemCallCode & 0xFF) });
-					}
-				}
-			}
-			else
-			{
-				AddInstruction("", Bytecode::B_CALL, StringToVector("UDF_" + std::to_string(object.Children[0].Children.size()) + "_" + object.Value));
 			}
 		}
 			break;

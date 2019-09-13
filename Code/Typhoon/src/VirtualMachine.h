@@ -43,7 +43,7 @@ private:
 		if (index < m_GlobalVars.size())
 			m_Stack.push(m_GlobalVars[index]);
 		else
-			std::cout << "Inaccessible memory location, missing variable!" << std::endl;
+			std::cout << "Inaccessible memory location, missing global variable!" << std::endl;
 	}
 
 	void StoreGlobalVarFromStack(int index)
@@ -60,7 +60,7 @@ private:
 		if (index < m_LocalVars[m_LocalVars.size() - 1].size())
 			m_Stack.push(*GetLocalVar(index));
 		else
-			std::cout << "Inaccessible memory location, missing variable!" << std::endl;
+			std::cout << "Inaccessible memory location, missing local variable!" << std::endl;
 	}
 
 	void StoreLocalVarFromStack(int index)
@@ -77,7 +77,7 @@ private:
 		if (index < m_ArgVars[m_ArgVars.size() - 1].size())
 			m_Stack.push(*GetArgVar(index));
 		else
-			std::cout << "Inaccessible memory location, missing variable!" << std::endl;
+			std::cout << "Inaccessible memory location, missing argument variable!" << std::endl;
 	}
 
 	void StoreArgVarFromStack(int index)
