@@ -5,14 +5,18 @@
 
 class File {
 public:
-    File(const char* filename)
+	File()
+	{ }
+
+    File(Ty_string_t filename)
         : m_Filename(filename)
     {
-        m_Bytes = ReadAllBytes(filename);
+        m_Bytes = ReadAllBytes(filename.c_str());
     }
 
-    const char* GetFilename() const { return m_Filename; }
+	Ty_string_t GetFilename() const { return m_Filename; }
     std::vector<char> GetBytes() const { return m_Bytes; }
+	void SetBytes(std::vector<char> bytes) { m_Bytes = bytes; }
 
     static std::vector<char> ReadAllBytes(char const* filename)
     {
@@ -26,8 +30,14 @@ public:
 
         return result;
     }
+
+	static bool Exists(const Ty_string_t& name)
+	{
+		struct stat buffer;
+		return (stat(name.c_str(), &buffer) == 0);
+	}
 private:
-    const char* m_Filename;
+	Ty_string_t m_Filename;
     std::vector<char> m_Bytes;
 };
 

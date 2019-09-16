@@ -484,8 +484,10 @@ void VirtualMachine::Syscall(SyscallCode code)
 	case SYS_NOP:
 		return;
 	case SYS_EXIT:
+		exit((*GetArgVar(0)).ValueInt);
 		break;
 	case SYS_KILL:
+		abort();
 		break;
 	case SYS_BREAK:
 		break;

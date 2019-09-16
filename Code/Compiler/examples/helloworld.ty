@@ -1,8 +1,4 @@
-#	           helloworld.ty
-#	This file is just used to test basic 
-#	functions of the programming language
-#	and to begin its development in its
-#	early stages.
+use functions
 
 var a = 4364763
 var msg
@@ -17,6 +13,3 @@ else:
 	msg = "a > 5"
 
 print(msg)
-
-func print(var text):
-	syscall(0x0F, text)

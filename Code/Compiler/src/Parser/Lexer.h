@@ -27,8 +27,8 @@ private:
 
 	// Rules to check the current token value against to see if it is a valid separator
 	Ty_string_t m_SeparatorExclusionRules[2] = { 
-		"^(?:(\".*[^\"])|(\'.*[^\']))$", 		// Checks if the token value is the beginning of a string
-		"^#.*$"									// Check if the token is a comment
+		"^(?:(\".*[^\"])|(\'.*[^\'])|([\"\']))$", 	// Checks if the token value is the beginning of a string
+		"^#.*$"										// Check if the token is a comment
 	};
 
 	Ty_string_t m_Comment = "#.*";		// Regex for a comment

@@ -1,0 +1,2 @@
+func print(var msg):
+	syscall(0x0F, msg)
