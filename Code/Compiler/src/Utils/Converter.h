@@ -13,22 +13,24 @@ static Ty_string_t VectorToString(std::vector<Ty_uint8_t> vector)
 	return Ty_string_t(vector.begin(), vector.end());
 }
 
-static std::vector<Ty_uint8_t> IntToBytes(int value)
+static std::vector<Ty_uint8_t> IntToBytes(int value, bool sign = true)
 {
-	if (abs(value) < ((pow(2, 8) - 1) / (value < 0 ? 2 : 1) - 1))
-		return { (Ty_uint8_t)(value & 0xFF) };
-	else if (abs(value) < (pow(2, 16) / (value < 0 ? 2 : 1) - 1))
-		return {
-				(Ty_uint8_t)((value >> 8) & 0xFF),
-				(Ty_uint8_t)(value & 0xFF)
-			};
-	else if (abs(value) < (pow(2, 32) / (value < 0 ? 2 : 1) - 1))
-		return {
-				(Ty_uint8_t)((value >> 24) & 0xFF),
-				(Ty_uint8_t)((value >> 16) & 0xFF),
-				(Ty_uint8_t)((value >> 8) & 0xFF),
-				(Ty_uint8_t)(value & 0xFF)
-			};
+	std::vector<Ty_uint8_t> bytes;
+	int size = 0;
+	if (abs(value) < (sign ? (pow(2, 8) / 2) : pow(2, 8)))
+		size = 1;
+	else if (abs(value) < (sign ? (pow(2, 16) / 2) : pow(2, 16)))
+		size = 2;
+	else if (abs(value) < (sign ? (pow(2, 32) / 2) : pow(2, 32)))
+		size = 4;
+
+	int i = size * 8;
+	while (i != 0) { 
+		bytes.push_back(value >> (i - 8)); 
+		i -= 8; 
+	}
+
+	return bytes;
 }
 
 static std::vector<Ty_uint8_t> FloatToBytes(float value)

@@ -22,126 +22,126 @@ void VirtualMachine::Run(File file)
 				break;
 			case B_LDARG_S:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
 				LoadArgVarToStack(index);
 				m_PC += 2;
 			}
 				break;
 			case B_STARG_S:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
 				StoreArgVarFromStack(index);
 				m_PC += 2;
 			}
 				break;
 			case B_LDARG:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
 				LoadArgVarToStack(index);
 				m_PC += 3;
 			}
 				break;
 			case B_STARG:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
 				StoreArgVarFromStack(index);
 				m_PC += 3;
 			}
 				break;
 			case B_LDARG_L:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 				LoadArgVarToStack(index);
 				m_PC += 5;
 			}
 				break;
 			case B_STARG_L:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 				StoreArgVarFromStack(index);
 				m_PC += 5;
 			}
 				break;
 			case B_LDLOC_S:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
 				LoadLocalVarToStack(index);
 				m_PC += 2;
 			}
 				break;
 			case B_STLOC_S:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
 				StoreLocalVarFromStack(index);
 				m_PC += 2;
 			}
 				break;
 			case B_LDLOC:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
 				LoadLocalVarToStack(index);
 				m_PC += 3;
 			}
 				break;
 			case B_STLOC:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
 				StoreLocalVarFromStack(index);
 				m_PC += 3;
 			}
 				break;
 			case B_LDLOC_L:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 				LoadLocalVarToStack(index);
 				m_PC += 5;
 			}
 				break;
 			case B_STLOC_L:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 				StoreLocalVarFromStack(index);
 				m_PC += 5;
 			}
 				break;
 			case B_LOAD_S:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
 				LoadGlobalVarToStack(index);
 				m_PC += 2;
 			}
 				break;
 			case B_STORE_S:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
 				StoreGlobalVarFromStack(index);
 				m_PC += 2;
 			}
 				break;
 			case B_LOAD:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
 				LoadGlobalVarToStack(index);
 				m_PC += 3;
 			}
 				break;
 			case B_STORE:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
 				StoreGlobalVarFromStack(index);
 				m_PC += 3;
 			}
 				break;
 			case B_LOAD_L:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 				LoadGlobalVarToStack(index);
 				m_PC += 5;
 			}
 				break;
 			case B_STORE_L:
 			{
-				Ty_uint32_t index = BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] });
+				Ty_uint32_t index = BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 				StoreGlobalVarFromStack(index);
 				m_PC += 5;
 			}
@@ -153,7 +153,7 @@ void VirtualMachine::Run(File file)
 			case B_LDCONST_S:
 			{
 				TyInt object;
-				object.Set(BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1] }));
+				object.Set(BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] }));
 				m_Stack.push(object);
 				m_PC += 2;
 			}
@@ -161,7 +161,7 @@ void VirtualMachine::Run(File file)
 			case B_LDUCONST_S:
 			{
 				TyInt object;
-				object.Set((Ty_uint32_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1] }));
+				object.Set((Ty_uint32_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] }));
 				m_Stack.push(object);
 				m_PC += 2;
 			}
@@ -169,7 +169,7 @@ void VirtualMachine::Run(File file)
 			case B_LDCONST:
 			{
 				TyInt object;
-				object.Set(BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] }));
+				object.Set(BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] }));
 				m_Stack.push(object);
 				m_PC += 3;
 			}
@@ -177,7 +177,7 @@ void VirtualMachine::Run(File file)
 			case B_LDUCONST:
 			{
 				TyInt object;
-				object.Set((Ty_uint32_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] }));
+				object.Set((Ty_uint32_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] }));
 				m_Stack.push(object);
 				m_PC += 3;
 			}
@@ -185,7 +185,7 @@ void VirtualMachine::Run(File file)
 			case B_LDCONST_L:
 			{
 				TyInt object;
-				object.Set(BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] }));
+				object.Set(BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] }));
 				m_Stack.push(object);
 				m_PC += 5;
 			}
@@ -193,7 +193,7 @@ void VirtualMachine::Run(File file)
 			case B_LDUCONST_L:
 			{
 				TyInt object;
-				object.Set((Ty_uint32_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] }));
+				object.Set((Ty_uint32_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] }));
 				m_Stack.push(object);
 				m_PC += 5;
 			}
@@ -247,12 +247,12 @@ void VirtualMachine::Run(File file)
 			}
 				break;
 			case B_BR_S:
-				m_PC = (Ty_uint64_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1] });
+				m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
 				break;
 			case B_BRTRUE_S:
 			{
 				if (m_Stack.top().ValueBool)
-					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1] });
+					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
 				else
 					m_PC += 2;
 				m_Stack.pop();
@@ -261,19 +261,19 @@ void VirtualMachine::Run(File file)
 			case B_BRFALSE_S:
 			{
 				if (!m_Stack.top().ValueBool)
-					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1] });
+					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] });
 				else
 					m_PC += 2;
 				m_Stack.pop();
 			}
 				break;
 			case B_BR:
-				m_PC = (Ty_uint64_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] });
+				m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
 				break;
 			case B_BRTRUE:
 			{
 				if (m_Stack.top().ValueBool)
-					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] });
+					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
 				else
 					m_PC += 3;
 				m_Stack.pop();
@@ -282,19 +282,19 @@ void VirtualMachine::Run(File file)
 			case B_BRFALSE:
 			{
 				if (!m_Stack.top().ValueBool)
-					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] });
+					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
 				else
 					m_PC += 3;
 				m_Stack.pop();
 			}
 				break;
 			case B_BR_L:
-				m_PC = (Ty_uint64_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] });
+				m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 				break;
 			case B_BRTRUE_L:
 			{
 				if (m_Stack.top().ValueBool)
-					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] });
+					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 				else
 					m_PC += 5;
 				m_Stack.pop();
@@ -303,7 +303,7 @@ void VirtualMachine::Run(File file)
 			case B_BRFALSE_L:
 			{
 				if (!m_Stack.top().ValueBool)
-					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] });
+					m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 				else
 					m_PC += 5;
 				m_Stack.pop();
@@ -324,7 +324,7 @@ void VirtualMachine::Run(File file)
 			case B_CALL:
 			{
 				m_ReturnPositions.push(m_PC + 5);
-				m_PC = (Ty_uint64_t)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2], (Ty_int8_t)m_Bytecode[m_PC + 3], (Ty_int8_t)m_Bytecode[m_PC + 4] });
+				m_PC = (Ty_uint64_t)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] });
 			}
 				break;
 			case B_RET:
@@ -462,7 +462,7 @@ void VirtualMachine::Run(File file)
 				break;
 			case B_SYSCALL:
 			{
-				SyscallCode code = (SyscallCode)BytesToInt({ (Ty_int8_t)m_Bytecode[m_PC + 1], (Ty_int8_t)m_Bytecode[m_PC + 2] });
+				SyscallCode code = (SyscallCode)BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] });
 				Syscall(code);
 				m_PC += 3;
 			}

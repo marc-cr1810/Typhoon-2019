@@ -4,7 +4,7 @@
 #	and to begin its development in its
 #	early stages.
 
-var a = 255
+var a = 4364763
 var msg
 
 print("a: " + a + ", ")
