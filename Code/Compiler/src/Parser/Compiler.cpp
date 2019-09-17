@@ -110,6 +110,10 @@ void Compiler::CompileASTNode(Node ast, int scope)
 				AddInstruction(endPoint.Name, Bytecode::B_NOP);
 				std::cout << node.Value << std::endl;
 			}
+			else if (node.StmtType == StatementType::WHILE_LOOP)
+			{
+				std::cout << node.Value << std::endl;
+			}
 			else if (node.StmtType == StatementType::ASSIGN_NEW)
 			{
 				Ty_string_t label = (scope == 0 ? "VG_" : "VL_") + std::to_string(m_Linker.GetVariables().size());

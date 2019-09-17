@@ -147,8 +147,11 @@ void VirtualMachine::Run(File file)
 			}
 				break;
 			case B_LDNULL:
-				m_Stack.push({ ObjectType::OBJECT_NULL });
+			{
+				TyObject object = Ty_NULL;
+				m_Stack.push(object);
 				m_PC++;
+			}
 				break;
 			case B_LDCONST_S:
 			{

@@ -35,6 +35,7 @@ enum StatementType
 	IF = GrammarType::IF_STATEMENT,
 	ELSE = GrammarType::ELSE_STATEMENT,
 	ELSE_IF = GrammarType::ELSE_IF_STATEMENT,
+	WHILE_LOOP = GrammarType::WHILE_STATEMENT,
 	RETURN_FUNC = GrammarType::RETURN_FUNCTION
 };
 

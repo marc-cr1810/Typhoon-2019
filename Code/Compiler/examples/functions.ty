@@ -1,8 +1,16 @@
+var null
+
+func exit():
+	syscall(0x01, 0)
+
+func exit(var code):
+	syscall(0x01, code)
+
 func print(var msg):
 	syscall(0x0F, msg)
 
 func abs(var value):
-	if (value < 0):
+	if value < 0:
 		return value * -1
 	else:
 		return value

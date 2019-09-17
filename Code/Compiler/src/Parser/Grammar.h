@@ -14,6 +14,7 @@ enum GrammarType
 	IF_STATEMENT,
 	ELSE_STATEMENT,
 	ELSE_IF_STATEMENT,
+	WHILE_STATEMENT,
 	RETURN_FUNCTION
 };
 
@@ -43,7 +44,7 @@ const Ty_int32_t ExpressionTokenTypes[6] = {
 	TokenType::OPERATOR
  };
 
-const Grammar GrammarFormats[9] = {
+const Grammar GrammarFormats[10] = {
 	{ GrammarType::CREATE_VAR, "'var' NAME" },
 	{ GrammarType::CREATE_VAR, "'var' NAME '=' EXPR" },
 	{ GrammarType::CREATE_FUNCTION, "'func' NAME ARGS ':'" },
@@ -51,6 +52,7 @@ const Grammar GrammarFormats[9] = {
 	{ GrammarType::IF_STATEMENT, "'if' EXPR ':'" },
 	{ GrammarType::ELSE_IF_STATEMENT, "'else' 'if' EXPR ':'"},
 	{ GrammarType::ELSE_STATEMENT, "'else' ':'" },
+	{ GrammarType::WHILE_STATEMENT, "'while' EXPR ':'" },
 	{ GrammarType::RETURN_FUNCTION, "'return'" },
 	{ GrammarType::RETURN_FUNCTION, "'return' EXPR" }
 };

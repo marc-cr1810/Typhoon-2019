@@ -8,7 +8,7 @@
 #include "BoolObject.h"
 
 struct TyObject _TyObject_Null = {
-	ObjectType::OBJECT_NULL
+	ObjectType::OBJECT_NULL, 0, 0, 0.0f, 0.0, "NULL", false
 };
 
 void TyObject::Set(Ty_int32_t value)
