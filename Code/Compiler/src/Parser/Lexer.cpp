@@ -51,8 +51,17 @@ void Lexer::TokenizeString(Ty_string_t string)
 							goto SkipSeparator;
 					}
 				}
+				for (OperatorToken _op : OperatorTokenTypes)
+				{
+					if (std::regex_match(tokenValue + byte, std::regex(_op.Value)))
+					{
+						tokenValue += byte;
+						goto ContinueOp;
+					}
+				}
 				AddToken(tokenValue);
 				tokenValue = byte;
+			ContinueOp:
 				while (i < string.length())
 				{
 					if (i + 1 == string.length())

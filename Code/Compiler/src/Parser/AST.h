@@ -34,7 +34,8 @@ enum StatementType
 	FUNCTION_DECLARATION = GrammarType::CREATE_FUNCTION,
 	IF = GrammarType::IF_STATEMENT,
 	ELSE = GrammarType::ELSE_STATEMENT,
-	ELSE_IF = GrammarType::ELSE_IF_STATEMENT
+	ELSE_IF = GrammarType::ELSE_IF_STATEMENT,
+	RETURN_FUNC = GrammarType::RETURN_FUNCTION
 };
 
 typedef struct TyNode

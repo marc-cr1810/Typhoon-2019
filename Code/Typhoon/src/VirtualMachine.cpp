@@ -153,7 +153,7 @@ void VirtualMachine::Run(File file)
 			case B_LDCONST_S:
 			{
 				TyInt object;
-				object.Set(BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] }));
+				object.Set(BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1] }, true));
 				m_Stack.push(object);
 				m_PC += 2;
 			}
@@ -169,7 +169,7 @@ void VirtualMachine::Run(File file)
 			case B_LDCONST:
 			{
 				TyInt object;
-				object.Set(BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] }));
+				object.Set(BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2] }, true));
 				m_Stack.push(object);
 				m_PC += 3;
 			}
@@ -185,7 +185,7 @@ void VirtualMachine::Run(File file)
 			case B_LDCONST_L:
 			{
 				TyInt object;
-				object.Set(BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] }));
+				object.Set(BytesToInt({ (Ty_uint8_t)m_Bytecode[m_PC + 1], (Ty_uint8_t)m_Bytecode[m_PC + 2], (Ty_uint8_t)m_Bytecode[m_PC + 3], (Ty_uint8_t)m_Bytecode[m_PC + 4] }, true));
 				m_Stack.push(object);
 				m_PC += 5;
 			}

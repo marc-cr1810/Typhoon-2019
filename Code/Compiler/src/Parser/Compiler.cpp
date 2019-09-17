@@ -139,8 +139,14 @@ void Compiler::CompileASTNode(Node ast, int scope)
 					last.Opcode != Bytecode::B_STLOC_S && last.Opcode != Bytecode::B_STLOC && last.Opcode != Bytecode::B_STLOC_L &&
 					last.Opcode != Bytecode::B_STORE_S && last.Opcode != Bytecode::B_STORE && last.Opcode != Bytecode::B_STORE_L)
 				{
-					AddInstruction("", Bytecode::B_POP, std::vector<Ty_uint8_t>());
+					AddInstruction("", Bytecode::B_POP);
 				}
+			}
+			else if (node.StmtType == StatementType::RETURN_FUNC)
+			{
+				if (node.Children.size() > 0)
+					CompileASTNode(node.Children[0]);
+				AddInstruction("", Bytecode::B_RET);
 			}
 		}
 		else if (node.Type == NodeType::NODE_EXPRESSION)
@@ -217,9 +223,9 @@ void Compiler::CompileObject(Node object, int scope)
 			break;
 		case ObjectType::OBJ_BOOL:
 			if (object.Value == "true" || object.Value == "True")
-				AddInstruction("", Bytecode::B_LDTRUE, std::vector<Ty_uint8_t>());
+				AddInstruction("", Bytecode::B_LDTRUE);
 			else if (object.Value == "false" || object.Value == "False")
-				AddInstruction("", Bytecode::B_LDFALSE, std::vector<Ty_uint8_t>());
+				AddInstruction("", Bytecode::B_LDFALSE);
 			break;
 		case ObjectType::OBJ_FUNCTION_CALL:
 		{

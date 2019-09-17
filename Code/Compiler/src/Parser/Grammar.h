@@ -13,7 +13,8 @@ enum GrammarType
 	EXPRESSION_STATEMENT,
 	IF_STATEMENT,
 	ELSE_STATEMENT,
-	ELSE_IF_STATEMENT
+	ELSE_IF_STATEMENT,
+	RETURN_FUNCTION
 };
 
 enum GrammarKeywordType
@@ -42,14 +43,16 @@ const Ty_int32_t ExpressionTokenTypes[6] = {
 	TokenType::OPERATOR
  };
 
-const Grammar GrammarFormats[7] = {
+const Grammar GrammarFormats[9] = {
 	{ GrammarType::CREATE_VAR, "'var' NAME" },
 	{ GrammarType::CREATE_VAR, "'var' NAME '=' EXPR" },
 	{ GrammarType::CREATE_FUNCTION, "'func' NAME ARGS ':'" },
 	{ GrammarType::EXPRESSION_STATEMENT, "EXPR" },
 	{ GrammarType::IF_STATEMENT, "'if' EXPR ':'" },
 	{ GrammarType::ELSE_IF_STATEMENT, "'else' 'if' EXPR ':'"},
-	{ GrammarType::ELSE_STATEMENT, "'else' ':'" }
+	{ GrammarType::ELSE_STATEMENT, "'else' ':'" },
+	{ GrammarType::RETURN_FUNCTION, "'return'" },
+	{ GrammarType::RETURN_FUNCTION, "'return' EXPR" }
 };
 
 static std::vector<Ty_string_t> GetGrammarKeywordList(Grammar grammar)

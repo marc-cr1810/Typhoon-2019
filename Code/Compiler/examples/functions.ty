@@ -1,2 +1,8 @@
 func print(var msg):
 	syscall(0x0F, msg)
+
+func abs(var value):
+	if (value < 0):
+		return value * -1
+	else:
+		return value
