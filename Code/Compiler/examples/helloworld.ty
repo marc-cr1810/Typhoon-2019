@@ -1,12 +1,4 @@
 use functions
 
-var null
-
-var a = -64
-var b = abs(a)
-var c = "test"
-
-print("a = " + a + ", b = " + b + ", c == null: " + (c == null))
-
-if c != null:
-	print(" because c is actually equal to " + c)
+var a = "test "
+print(a * 1.5)

@@ -35,13 +35,20 @@ static std::vector<Ty_uint8_t> IntToBytes(int value, bool sign = true)
 
 static std::vector<Ty_uint8_t> FloatToBytes(float value)
 {
-	std::vector<Ty_uint8_t> bytes;
-	unsigned long d = *(unsigned long*)&value;
+	union flt
+	{
+		float f;
+		unsigned char bytes[sizeof(float)];
+	};
 
-	bytes.push_back((d & 0xFF000000) >> 24);
-	bytes.push_back((d & 0xFF0000) >> 16);
-	bytes.push_back((d & 0xFF00) >> 8);
-	bytes.push_back(d & 0x00FF);
+	std::vector<Ty_uint8_t> bytes;
+	flt val;
+	val.f = value;
+
+	bytes.push_back(val.bytes[0]);
+	bytes.push_back(val.bytes[1]);
+	bytes.push_back(val.bytes[2]);
+	bytes.push_back(val.bytes[3]);
 	return bytes;
 }
 

@@ -30,14 +30,18 @@ static int BytesToInt(std::vector<Ty_uint8_t> bytes, bool sign = false)
 
 static float BytesToFloat(std::vector<Ty_uint8_t> bytes)
 {
-	float member = 0.0;
+	union flt
+	{
+		float f;
+		unsigned char bytes[sizeof(float)];
+	};
+	flt value;
+	value.bytes[0] = bytes[0];
+	value.bytes[1] = bytes[1];
+	value.bytes[2] = bytes[2];
+	value.bytes[3] = bytes[3];
 
-	member += (float)(bytes[0] << 24);
-	member += (float)(bytes[1] << 16);
-	member += (float)(bytes[2] << 8);
-	member += (float)(bytes[3]);
-
-	return member;
+	return value.f;
 }
 
 #endif

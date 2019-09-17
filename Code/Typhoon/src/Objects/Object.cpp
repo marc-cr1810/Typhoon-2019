@@ -200,8 +200,53 @@ TyObject operator*(const TyObject& left, const TyObject& right)
 		object.Set(left.ValueDouble * right.ValueDouble);
 		break;
 	case OBJECT_STRING:
-		std::cout << "Cannot multiply a string and a string!" << std::endl;
-		return Ty_NULL;
+	{
+		if (right.Type == OBJECT_INT)
+		{
+			for (int i = 0; i < right.ValueInt; i++)
+			{
+				Ty_string_t value = object.ValueString + left.ValueString;
+				object.Set(value);
+			}
+		}
+		else if (right.Type == OBJECT_FLOAT)
+		{
+			for (int i = 0; i < (Ty_int32_t)right.ValueFloat; i++)
+			{
+				Ty_string_t value = object.ValueString + left.ValueString;
+				object.Set(value);
+			}
+
+			float test = right.ValueFloat - (Ty_int32_t)right.ValueFloat;
+			int size = left.ValueString.size() * (right.ValueFloat - (Ty_int32_t)right.ValueFloat);
+			for (int i = 0; i < size; i++)
+			{
+				Ty_string_t value = object.ValueString + left.ValueString[i];
+				object.Set(value);
+			}
+		}
+		else if (right.Type == OBJECT_DOUBLE)
+		{
+			for (int i = 0; i < (Ty_int32_t)right.ValueDouble; i++)
+			{
+				Ty_string_t value = object.ValueString + left.ValueString;
+				object.Set(value);
+			}
+
+			float test = right.ValueDouble - (Ty_int32_t)right.ValueDouble;
+			int size = left.ValueString.size() * (right.ValueDouble - (Ty_int32_t)right.ValueDouble);
+			for (int i = 0; i < size; i++)
+			{
+				Ty_string_t value = object.ValueString + left.ValueString[i];
+				object.Set(value);
+			}
+		}
+		else
+		{
+			std::cout << "Cannot multiply a string by a non-integer or non-floating-point type!" << std::endl;
+			return Ty_NULL;
+		}
+	}
 		break;
 	case OBJECT_BOOL:
 		object.Set((left.ValueInt * right.ValueInt) != 0);
@@ -232,7 +277,7 @@ TyObject operator/(const TyObject& left, const TyObject& right)
 		object.Set(left.ValueDouble / right.ValueDouble);
 		break;
 	case OBJECT_STRING:
-		std::cout << "Cannot divide a string and a string!" << std::endl;
+		std::cout << "Cannot divide a string!" << std::endl;
 		return Ty_NULL;
 		break;
 	case OBJECT_BOOL:
