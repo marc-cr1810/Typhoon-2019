@@ -108,11 +108,19 @@ void Compiler::CompileASTNode(Node ast, int scope)
 				}
 
 				AddInstruction(endPoint.Name, Bytecode::B_NOP);
-				std::cout << node.Value << std::endl;
 			}
 			else if (node.StmtType == StatementType::WHILE_LOOP)
 			{
-				std::cout << node.Value << std::endl;
+				Branch startPoint = *m_Linker.AddBranch();
+				Branch endPoint = *m_Linker.AddBranch();
+				int start = m_Instructions.size();
+
+				CompileASTNode(node.Children[0], scope);
+				m_Instructions[start].Label = startPoint.Name;
+				AddInstruction("", Bytecode::B_BRFALSE, StringToVector(endPoint.Name));
+				CompileASTBlock(node.Children[1], scope + 1);
+				AddInstruction("", Bytecode::B_BR, StringToVector(startPoint.Name));
+				AddInstruction(endPoint.Name, Bytecode::B_NOP);
 			}
 			else if (node.StmtType == StatementType::ASSIGN_NEW)
 			{

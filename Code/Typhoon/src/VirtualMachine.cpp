@@ -517,7 +517,8 @@ void VirtualMachine::Syscall(SyscallCode code)
 	case SYS_CONSOLE_READLINE:
 		break;
 	case SYS_CONSOLE_WRITE:
-		std::cout << (*GetArgVar(0)).ValueString;
+		std::fwrite((*GetArgVar(0)).ValueString.c_str(), (*GetArgVar(0)).ValueString.length(), 1, stdout);
+		//std::cout << (*GetArgVar(0)).ValueString;
 		break;
 	default:
 		break;
