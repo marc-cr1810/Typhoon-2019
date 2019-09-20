@@ -95,6 +95,11 @@ void Linker::Link(std::vector<Instruction>* machineLang)
 		else if (instruction.Opcode == Bytecode::B_CALL)
 		{
 			Function* func = GetFunctionFromLabel(VectorToString(instruction.Bytes));
+			if (func == nullptr)
+			{
+				std::cout << "Unknown function \"" + VectorToString(instruction.Bytes) + "\"" << std::endl;
+				return;
+			}
 			machineLang->at(i).Bytes = {
 				(Ty_uint8_t)((func->Location >> 24) & 0xFF),
 				(Ty_uint8_t)((func->Location >> 16) & 0xFF),

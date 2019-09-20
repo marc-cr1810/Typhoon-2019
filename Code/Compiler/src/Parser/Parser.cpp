@@ -71,9 +71,9 @@ Node Parser::ParseTokens(std::vector<Token> tokens)
 							{
 								if (TokenToOperatorToken(tokens[i + 1]).OpType == OperatorType::LEFT_BRACKET)
 								{
-									Ty_string_t funcCall = tokens[i++].Value + tokens[i].Value + " ";
+									Ty_string_t funcCall = tokens[i].Value + tokens[i + 1].Value + " ";
 									int level = 1;
-									i++;
+									i += 2;
 									while (level > 0)
 									{
 										if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::LEFT_BRACKET)
