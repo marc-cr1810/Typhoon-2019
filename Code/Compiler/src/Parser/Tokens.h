@@ -21,7 +21,7 @@ const Token TokenTypes[13] = {
 };
 
 // Different operator tokens, uses regex in the value to find the tokens
-const OperatorToken OperatorTokenTypes[16] = {
+const OperatorToken OperatorTokenTypes[17] = {
 	{ TokenType::START, "^\\t*$", OperatorType::UNKNOWN, OperatorCategory::CATEGORY_UNKNOWN },
 	{ TokenType::OPERATOR, "^=$", OperatorType::EQUAL, OperatorCategory::ASSIGNMENT },					// Set
 	{ TokenType::OPERATOR, "^==$", OperatorType::EQUAL_TO, OperatorCategory::EQUALITY },				// Equal to
@@ -34,6 +34,7 @@ const OperatorToken OperatorTokenTypes[16] = {
 	{ TokenType::OPERATOR, "^<$", OperatorType::LESS_THAN, OperatorCategory::RELATIONAL },				// Less than
 	{ TokenType::OPERATOR, "^>=$", OperatorType::GREATER_THAN_EQUAL_TO, OperatorCategory::RELATIONAL },	// Greater than or equal to
 	{ TokenType::OPERATOR, "^<=$", OperatorType::LESS_THAN_EQUAL_TO, OperatorCategory::RELATIONAL },	// Less than or equal to
+	{ TokenType::OPERATOR, "^:=$", OperatorType::ASSIGN, OperatorCategory::ASSIGNMENT_INLINE },			// Right bracket
 	{ TokenType::OPERATOR, "^\\($", OperatorType::LEFT_BRACKET, OperatorCategory::POSTFIX },			// Left bracket
 	{ TokenType::OPERATOR, "^\\)$", OperatorType::RIGHT_BRACKET, OperatorCategory::POSTFIX },			// Right bracket
 	{ TokenType::OPERATOR, "^,$", OperatorType::COMMA, OperatorCategory::CATEGORY_UNKNOWN },			// Right bracket

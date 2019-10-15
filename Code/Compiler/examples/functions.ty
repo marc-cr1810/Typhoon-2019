@@ -14,3 +14,11 @@ func abs(var value):
 		return value * -1
 	else:
 		return value
+
+func pow(var a, var b):
+	var c = a
+	b = b - 1
+	while b > 0:
+		c = c * a
+		b = b - 1
+	return c
