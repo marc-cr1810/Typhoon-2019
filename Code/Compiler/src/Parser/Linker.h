@@ -67,7 +67,7 @@ public:
 
 	Function* GetFunctionFromNameArgCount(Ty_string_t name, int argCount);
 	Function* GetFunctionFromLabel(Ty_string_t label);
-	Variable* GetVariableFromName(Ty_string_t name);
+	Variable* GetVariableFromName(Ty_string_t name, bool ignoreWarn = false);
 	VariableType GetVarTypeFromLabel(Ty_string_t label);
 	Branch* GetBranchFromName(Ty_string_t label);
 

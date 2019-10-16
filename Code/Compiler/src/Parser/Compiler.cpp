@@ -167,6 +167,23 @@ void Compiler::CompileASTNode(Node ast, int scope)
 		}
 		else if (node.Type == NodeType::NODE_OBJECT)
 		{
+			if (ast.Type == NodeType::NODE_EXPRESSION && ast.OpType == OperatorType::ASSIGN)
+			{
+				if (i == 1)
+				{
+					if (node.ObjType != ObjectType::OBJ_NAME)
+					{
+						std::cout << "Error: Assignment can only set variables! " << node.OpType << std::endl;
+						return;
+					}
+					if (m_Linker.GetVariableFromName(node.Value, true) == nullptr)
+					{
+						Ty_string_t label = (scope == 0 ? "VG_" : "VL_") + std::to_string(m_Linker.GetVariables().size());
+						Ty_string_t name = node.Value;
+						Variable var = *m_Linker.AddVariable(name, label, scope == 0 ? AccessType::GLOBAL : AccessType::LOCAL, scope);
+					}
+				}
+			}
 			CompileObject(node, scope);
 		}
 	}

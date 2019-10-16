@@ -235,7 +235,7 @@ Function* Linker::GetFunctionFromLabel(Ty_string_t label)
 	return function;
 }
 
-Variable* Linker::GetVariableFromName(Ty_string_t name)
+Variable* Linker::GetVariableFromName(Ty_string_t name, bool ignoreWarn)
 {
 	Variable* variable = nullptr;
 
@@ -250,7 +250,7 @@ Variable* Linker::GetVariableFromName(Ty_string_t name)
 		}
 	}
 
-	if (variable == nullptr)
+	if (variable == nullptr && !ignoreWarn)
 		std::cout << "Error: Undefined variable \"" << name << "\"" << std::endl;
 	return variable;
 }
