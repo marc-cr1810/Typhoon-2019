@@ -140,9 +140,10 @@ void Linker::RemoveFunctions(int scope)
 	}
 }
 
-Variable* Linker::AddVariable(Ty_string_t name, Ty_string_t labelName, AccessType access, int scope)
+Variable* Linker::AddVariable(Ty_string_t name, Ty_string_t labelName, int scope)
 {
 	int id = 0;
+	AccessType access = scope == 0 ? AccessType::GLOBAL : AccessType::LOCAL;
 	Ty_string_t type = labelName.substr(0, 2);
 	for (int i = 0; i < m_Variables.size(); i++)
 	{

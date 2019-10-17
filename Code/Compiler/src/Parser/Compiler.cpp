@@ -41,7 +41,7 @@ void Compiler::CompileASTNode(Node ast, int scope)
 						if (arg.StmtType != StatementType::ASSIGN_NEW)
 							return;
 						args.push_back(name);
-						m_Linker.AddVariable(name, label, AccessType::LOCAL, scope + 1);
+						m_Linker.AddVariable(name, label, scope + 1);
 					}
 				}
 
@@ -126,7 +126,7 @@ void Compiler::CompileASTNode(Node ast, int scope)
 			{
 				Ty_string_t label = (scope == 0 ? "VG_" : "VL_") + std::to_string(m_Linker.GetVariables().size());
 				Ty_string_t name = node.Children[0].Value;
-				Variable var = *m_Linker.AddVariable(name, label, scope == 0 ? AccessType::GLOBAL : AccessType::LOCAL, scope);
+				Variable var = *m_Linker.AddVariable(name, label, scope);
 				
 				if (node.Children.size() > 1)
 					CompileASTNode(node.Children[1], scope);
@@ -180,7 +180,7 @@ void Compiler::CompileASTNode(Node ast, int scope)
 					{
 						Ty_string_t label = (scope == 0 ? "VG_" : "VL_") + std::to_string(m_Linker.GetVariables().size());
 						Ty_string_t name = node.Value;
-						Variable var = *m_Linker.AddVariable(name, label, scope == 0 ? AccessType::GLOBAL : AccessType::LOCAL, scope);
+						Variable var = *m_Linker.AddVariable(name, label, scope);
 					}
 				}
 			}
@@ -245,6 +245,8 @@ void Compiler::CompileObject(Node object, int scope)
 		case ObjectType::OBJ_STRING:
 		{
 			Ty_string_t value = object.Value.substr(1, object.Value.length() - 2);
+			for (SpecialChar sc : m_SpecialChars)
+				value = std::regex_replace(value, std::regex(sc.format), sc.replacement);
 			std::vector<Ty_uint8_t> bytes = StringToVector(value);
 			bytes.push_back('\0');
 			AddInstruction("", Bytecode::B_LDSTR, bytes);

@@ -87,4 +87,16 @@ struct OperatorToken
 	{}
 };
 
+struct SpecialChar
+{
+	Ty_string_t format;
+	Ty_string_t replacement;
+};
+
+static SpecialChar m_SpecialChars[3] = {
+	{ "\\\\0", ""},
+	{ "\\\\n", "\n" },
+	{ "\\\\t", "	"}
+};
+
 #endif

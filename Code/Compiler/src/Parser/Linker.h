@@ -59,7 +59,7 @@ public:
 	void RemoveFunction(Ty_string_t labelName);
 	void RemoveFunctions(int scope);
 
-	Variable* AddVariable(Ty_string_t name, Ty_string_t labelName, AccessType access, int scope = 0);
+	Variable* AddVariable(Ty_string_t name, Ty_string_t labelName, int scope = 0);
 	void RemoveVariable(Ty_string_t labelName);
 	void RemoveVariables(int scope);
 
