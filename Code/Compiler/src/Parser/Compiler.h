@@ -28,6 +28,7 @@ private:
 	std::vector<Instruction> m_Instructions;
 
 	void BuildMachineCode();
+	void SwitchLoadToStore(Instruction* instruction);
 };
 
 #endif

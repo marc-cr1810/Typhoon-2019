@@ -2,3 +2,8 @@ use functions
 
 a := (7 + b := 5)
 print("a = " + a + ", b = " + b)
+
+var c = 1
+print(", c = " + c + "; ")
+c /= 2
+print(c)

@@ -323,40 +323,43 @@ void Compiler::CompileExpression(Node object, int scope)
 	case OperatorType::EQUAL:
 	{
 		Instruction* instruction = &m_Instructions[m_Instructions.size() - 1];
-		switch (instruction->Opcode)
-		{
-		case Bytecode::B_LOAD_S:
-			instruction->Opcode = Bytecode::B_STORE_S;
-			break;
-		case Bytecode::B_LDLOC_S:
-			instruction->Opcode = Bytecode::B_STLOC_S;
-			break;
-		case Bytecode::B_LDARG_S:
-			instruction->Opcode = Bytecode::B_STARG_S;
-			break;
-		case Bytecode::B_LOAD:
-			instruction->Opcode = Bytecode::B_STORE;
-			break;
-		case Bytecode::B_LDLOC:
-			instruction->Opcode = Bytecode::B_STLOC;
-			break;
-		case Bytecode::B_LDARG:
-			instruction->Opcode = Bytecode::B_STARG;
-			break;
-		case Bytecode::B_LOAD_L:
-			instruction->Opcode = Bytecode::B_STORE_L;
-			break;
-		case Bytecode::B_LDLOC_L:
-			instruction->Opcode = Bytecode::B_STLOC_L;
-			break;
-		case Bytecode::B_LDARG_L:
-			instruction->Opcode = Bytecode::B_STARG_L;
-			break;
-		}
+		SwitchLoadToStore(instruction);
 	}
 		break;
 	case OperatorType::EQUAL_TO:
 		AddInstruction("", Bytecode::B_CEQ);
+		break;
+	case OperatorType::ADD_EQUAL:
+	{
+		Instruction instruction = m_Instructions[m_Instructions.size() - 1];
+		AddInstruction("", Bytecode::B_ADD);
+		SwitchLoadToStore(&instruction);
+		AddInstruction("", instruction.Opcode, instruction.Bytes);
+	}
+		break;
+	case OperatorType::SUBRTACT_EQUAL:
+	{
+		Instruction instruction = m_Instructions[m_Instructions.size() - 1];
+		AddInstruction("", Bytecode::B_SUB);
+		SwitchLoadToStore(&instruction);
+		AddInstruction("", instruction.Opcode, instruction.Bytes);
+	}
+		break;
+	case OperatorType::MULTIPLY_EQUAL:
+	{
+		Instruction instruction = m_Instructions[m_Instructions.size() - 1];
+		AddInstruction("", Bytecode::B_MUL);
+		SwitchLoadToStore(&instruction);
+		AddInstruction("", instruction.Opcode, instruction.Bytes);
+	}
+		break;
+	case OperatorType::DIVIDE_EQUAL:
+	{
+		Instruction instruction = m_Instructions[m_Instructions.size() - 1];
+		AddInstruction("", Bytecode::B_DIV);
+		SwitchLoadToStore(&instruction);
+		AddInstruction("", instruction.Opcode, instruction.Bytes);
+	}
 		break;
 	case OperatorType::NOT_EQUAL_TO:
 		AddInstruction("", Bytecode::B_CNEQ);
@@ -377,37 +380,8 @@ void Compiler::CompileExpression(Node object, int scope)
 	{
 		Instruction* instruction = &m_Instructions[m_Instructions.size() - 1];
 		Instruction copy = *instruction;
-		switch (instruction->Opcode)
-		{
-		case Bytecode::B_LOAD_S:
-			instruction->Opcode = Bytecode::B_STORE_S;
-			break;
-		case Bytecode::B_LDLOC_S:
-			instruction->Opcode = Bytecode::B_STLOC_S;
-			break;
-		case Bytecode::B_LDARG_S:
-			instruction->Opcode = Bytecode::B_STARG_S;
-			break;
-		case Bytecode::B_LOAD:
-			instruction->Opcode = Bytecode::B_STORE;
-			break;
-		case Bytecode::B_LDLOC:
-			instruction->Opcode = Bytecode::B_STLOC;
-			break;
-		case Bytecode::B_LDARG:
-			instruction->Opcode = Bytecode::B_STARG;
-			break;
-		case Bytecode::B_LOAD_L:
-			instruction->Opcode = Bytecode::B_STORE_L;
-			break;
-		case Bytecode::B_LDLOC_L:
-			instruction->Opcode = Bytecode::B_STLOC_L;
-			break;
-		case Bytecode::B_LDARG_L:
-			instruction->Opcode = Bytecode::B_STARG_L;
-			break;
-		}
-		AddInstruction(copy.Label, copy.Opcode, copy.Bytes);
+		SwitchLoadToStore(instruction);
+		AddInstruction("", copy.Opcode, copy.Bytes);
 	}
 		break;
 	}
@@ -440,4 +414,38 @@ void Compiler::BuildMachineCode()
 	std::ofstream outputFile(m_OutputPath.c_str(), std::ios::out | std::ios::binary);
 	outputFile.write((const char*)& outputBytes[0], outputBytes.size());
 	outputFile.close();
+}
+
+void Compiler::SwitchLoadToStore(Instruction* instruction)
+{
+	switch (instruction->Opcode)
+	{
+	case Bytecode::B_LOAD_S:
+		instruction->Opcode = Bytecode::B_STORE_S;
+		break;
+	case Bytecode::B_LDLOC_S:
+		instruction->Opcode = Bytecode::B_STLOC_S;
+		break;
+	case Bytecode::B_LDARG_S:
+		instruction->Opcode = Bytecode::B_STARG_S;
+		break;
+	case Bytecode::B_LOAD:
+		instruction->Opcode = Bytecode::B_STORE;
+		break;
+	case Bytecode::B_LDLOC:
+		instruction->Opcode = Bytecode::B_STLOC;
+		break;
+	case Bytecode::B_LDARG:
+		instruction->Opcode = Bytecode::B_STARG;
+		break;
+	case Bytecode::B_LOAD_L:
+		instruction->Opcode = Bytecode::B_STORE_L;
+		break;
+	case Bytecode::B_LDLOC_L:
+		instruction->Opcode = Bytecode::B_STLOC_L;
+		break;
+	case Bytecode::B_LDARG_L:
+		instruction->Opcode = Bytecode::B_STARG_L;
+		break;
+	}
 }

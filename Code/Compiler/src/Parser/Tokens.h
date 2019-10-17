@@ -21,11 +21,16 @@ const Token TokenTypes[13] = {
 };
 
 // Different operator tokens, uses regex in the value to find the tokens
-const OperatorToken OperatorTokenTypes[17] = {
+const OperatorToken OperatorTokenTypes[21] = {
 	{ TokenType::START, "^\\t*$", OperatorType::UNKNOWN, OperatorCategory::CATEGORY_UNKNOWN },
 	{ TokenType::OPERATOR, "^=$", OperatorType::EQUAL, OperatorCategory::ASSIGNMENT },					// Set
 	{ TokenType::OPERATOR, "^==$", OperatorType::EQUAL_TO, OperatorCategory::EQUALITY },				// Equal to
 	{ TokenType::OPERATOR, "^!=$", OperatorType::NOT_EQUAL_TO, OperatorCategory::EQUALITY },			// Not equal to
+	{ TokenType::OPERATOR, "^:=$", OperatorType::ASSIGN, OperatorCategory::ASSIGNMENT_INLINE },			// Expression assignment
+	{ TokenType::OPERATOR, "^\\+=$", OperatorType::ADD_EQUAL, OperatorCategory::ASSIGNMENT },			// Add equal
+	{ TokenType::OPERATOR, "^-=$", OperatorType::SUBRTACT_EQUAL, OperatorCategory::ASSIGNMENT },		// Subrtact equal
+	{ TokenType::OPERATOR, "^\\*=$", OperatorType::MULTIPLY_EQUAL, OperatorCategory::ASSIGNMENT },		// Multiply equal
+	{ TokenType::OPERATOR, "^\\/=$", OperatorType::DIVIDE_EQUAL, OperatorCategory::ASSIGNMENT },		// Divide equal
 	{ TokenType::OPERATOR, "^\\+$", OperatorType::ADD, OperatorCategory::ADDITIVE },					// Addition
 	{ TokenType::OPERATOR, "^-$", OperatorType::SUBTRACT, OperatorCategory::ADDITIVE },					// Subtraction
 	{ TokenType::OPERATOR, "^\\*$", OperatorType::MULTIPLY, OperatorCategory::MULTIPLICATIVE },			// Multiplication
@@ -34,7 +39,6 @@ const OperatorToken OperatorTokenTypes[17] = {
 	{ TokenType::OPERATOR, "^<$", OperatorType::LESS_THAN, OperatorCategory::RELATIONAL },				// Less than
 	{ TokenType::OPERATOR, "^>=$", OperatorType::GREATER_THAN_EQUAL_TO, OperatorCategory::RELATIONAL },	// Greater than or equal to
 	{ TokenType::OPERATOR, "^<=$", OperatorType::LESS_THAN_EQUAL_TO, OperatorCategory::RELATIONAL },	// Less than or equal to
-	{ TokenType::OPERATOR, "^:=$", OperatorType::ASSIGN, OperatorCategory::ASSIGNMENT_INLINE },			// Right bracket
 	{ TokenType::OPERATOR, "^\\($", OperatorType::LEFT_BRACKET, OperatorCategory::POSTFIX },			// Left bracket
 	{ TokenType::OPERATOR, "^\\)$", OperatorType::RIGHT_BRACKET, OperatorCategory::POSTFIX },			// Right bracket
 	{ TokenType::OPERATOR, "^,$", OperatorType::COMMA, OperatorCategory::CATEGORY_UNKNOWN },			// Right bracket

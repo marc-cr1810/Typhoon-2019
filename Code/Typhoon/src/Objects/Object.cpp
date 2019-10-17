@@ -265,11 +265,23 @@ TyObject operator/(const TyObject& left, const TyObject& right)
 	switch (left.Type)
 	{
 	case OBJECT_INT:
-		object.Set(left.ValueInt / right.ValueInt);
+	{
+		float value = left.ValueFloat / right.ValueFloat;
+		if ((value - (int)value) > 0)
+			object.Set(value);
+		else
+			object.Set(left.ValueInt / right.ValueInt);
+	}
 		break;
 	case OBJECT_UINT:
-		object.Set(left.ValueUInt / right.ValueUInt);
-		break;
+	{
+		float value = left.ValueFloat / right.ValueFloat;
+		if ((value - (int)value) > 0)
+			object.Set(value);
+		else
+			object.Set(left.ValueUInt / right.ValueUInt);
+	}
+	break;
 	case OBJECT_FLOAT:
 		object.Set(left.ValueFloat / right.ValueFloat);
 		break;
