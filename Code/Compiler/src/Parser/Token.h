@@ -5,7 +5,7 @@
 
 enum TokenType
 {
-	UNNOWN = -1,
+	UNKNOWN_TOKEN = -1,
 	START,
 	END,
 	NAME,
@@ -13,8 +13,12 @@ enum TokenType
 	FLOAT,
 	STRING,
 	BOOL,
+	RETURN,
 	OPERATOR,
-	STATEMENT
+	OPERATOR_SPECIAL,
+	STATEMENT,
+	DECLARATION,
+	FUNCTION_CALL
 };
 
 enum OperatorType
@@ -24,7 +28,6 @@ enum OperatorType
 	SUBTRACT,
 	MULTIPLY,
 	DIVIDE,
-	POWER,
 	LESS_THAN,
 	GREATER_THAN,
 	EQUAL,
@@ -32,9 +35,34 @@ enum OperatorType
 	NOT_EQUAL_TO,
 	LESS_THAN_EQUAL_TO,
 	GREATER_THAN_EQUAL_TO,
+	ADD_EQUAL,
+	SUBRTACT_EQUAL,
+	MULTIPLY_EQUAL,
+	DIVIDE_EQUAL,
 	LEFT_BRACKET,
 	RIGHT_BRACKET,
-	SEMICOLON
+	ASSIGN,
+	SEMICOLON,
+	COMMA
+};
+
+enum OperatorCategory
+{
+	CATEGORY_UNKNOWN = -1,
+	ASSIGNMENT,
+	CONDITIONAL,
+	LOGICAL_OR,
+	LOGICAL_AND,
+	BITWISE_OR,
+	BITWISE_AND,
+	EQUALITY,
+	RELATIONAL,
+	SHIFT,
+	ADDITIVE,
+	MULTIPLICATIVE,
+	UNARY,
+	ASSIGNMENT_INLINE,
+	POSTFIX
 };
 
 struct Token
@@ -52,10 +80,23 @@ struct OperatorToken
 	TokenType Type;
 	Ty_string_t Value;
 	OperatorType OpType;
+	OperatorCategory Category;
 
-	OperatorToken(TokenType type, Ty_string_t value, OperatorType opType)
-		: Type(type), Value(value), OpType(opType)
+	OperatorToken(TokenType type, Ty_string_t value, OperatorType opType, OperatorCategory category)
+		: Type(type), Value(value), OpType(opType), Category(category)
 	{}
+};
+
+struct SpecialChar
+{
+	Ty_string_t format;
+	Ty_string_t replacement;
+};
+
+static SpecialChar m_SpecialChars[3] = {
+	{ "\\\\0", ""},
+	{ "\\\\n", "\n" },
+	{ "\\\\t", "	"}
 };
 
 #endif

@@ -1,0 +1,27 @@
+var null
+
+func exit():
+	syscall(0x01, 0)
+
+func exit(var code):
+	syscall(0x01, code)
+
+func print(var msg):
+	syscall(0x0F, msg)
+
+func println(var msg):
+	syscall(0x0F, msg + "\n")
+
+func abs(var value):
+	if value < 0:
+		return value * -1
+	else:
+		return value
+
+func pow(var a, var b):
+	var c = a
+	b -= 1
+	while b > 0:
+		c *= a
+		b -= 1
+	return c

@@ -1,13 +1,5 @@
-#           helloworld.ty
-# This file is just used to test basic 
-# functions of the programming language
-# and to begin its development in its
-# early stages.
+use functions
 
-var a = 3
-var b = -1
-
-if a > 3:
-	b = 1
-else
-	b = 0
+a := (7 + b := 5)
+println("a = " + a)
+println("b = " + b)
