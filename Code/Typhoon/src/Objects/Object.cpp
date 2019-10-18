@@ -119,33 +119,97 @@ TyObject TyObject::operator=(const bool& other)
 	return object;
 }
 
+void TyObject::MultiplyString(const TyObject& left, const TyObject& right, TyObject* out)
+{
+	const TyObject* string = &left;
+	const TyObject* count = &right;
+	if (right.Type == ObjectType::OBJECT_STRING)
+	{
+		string = &right;
+		count = &left;
+	}
+
+	if (count->Type == OBJECT_INT)
+	{
+		for (int i = 0; i < count->ValueInt; i++)
+		{
+			Ty_string_t value = out->ValueString + string->ValueString;
+			out->Set(value);
+		}
+	}
+	else if (count->Type == OBJECT_FLOAT)
+	{
+		for (int i = 0; i < (Ty_int32_t)count->ValueFloat; i++)
+		{
+			Ty_string_t value = out->ValueString + string->ValueString;
+			out->Set(value);
+		}
+
+		float test = count->ValueFloat - (Ty_int32_t)count->ValueFloat;
+		int size = string->ValueString.size() * (count->ValueFloat - (Ty_int32_t)count->ValueFloat);
+		for (int i = 0; i < size; i++)
+		{
+			Ty_string_t value = out->ValueString + string->ValueString[i];
+			out->Set(value);
+		}
+	}
+	else if (count->Type == OBJECT_DOUBLE)
+	{
+		for (int i = 0; i < (Ty_int32_t)count->ValueDouble; i++)
+		{
+			Ty_string_t value = out->ValueString + string->ValueString;
+			out->Set(value);
+		}
+
+		float test = count->ValueDouble - (Ty_int32_t)count->ValueDouble;
+		int size = left.ValueString.size() * (count->ValueDouble - (Ty_int32_t)count->ValueDouble);
+		for (int i = 0; i < size; i++)
+		{
+			Ty_string_t value = out->ValueString + string->ValueString[i];
+			out->Set(value);
+		}
+	}
+	else
+	{
+		std::cout << "Cannot multiply a string by a non-integer or non-floating-point type!" << std::endl;
+		out = &Ty_NULL;
+	}
+}
+
 TyObject operator+(const TyObject& left, const TyObject& right)
 {
 	TyObject object;
-	switch (left.Type)
+	if (right.Type == ObjectType::OBJECT_STRING)
 	{
-	case OBJECT_INT:
-		object.Set(left.ValueInt + right.ValueInt);
-		break;
-	case OBJECT_UINT:
-		object.Set(left.ValueUInt + right.ValueUInt);
-		break;
-	case OBJECT_FLOAT:
-		object.Set(left.ValueFloat + right.ValueFloat);
-		break;
-	case OBJECT_DOUBLE:
-		object.Set(left.ValueDouble + right.ValueDouble);
-		break;
-	case OBJECT_STRING:
 		object.Set(left.ValueString + right.ValueString);
-		break;
-	case OBJECT_BOOL:
-		object.Set((left.ValueInt + right.ValueInt) != 0);
-		break;
-	default:
-		std::cout << "Cannot add to a NULL variable!" << std::endl;
-		return Ty_NULL;
-		break;
+	}
+	else
+	{
+		switch (left.Type)
+		{
+		case OBJECT_INT:
+			object.Set(left.ValueInt + right.ValueInt);
+			break;
+		case OBJECT_UINT:
+			object.Set(left.ValueUInt + right.ValueUInt);
+			break;
+		case OBJECT_FLOAT:
+			object.Set(left.ValueFloat + right.ValueFloat);
+			break;
+		case OBJECT_DOUBLE:
+			object.Set(left.ValueDouble + right.ValueDouble);
+			break;
+		case OBJECT_STRING:
+			object.Set(left.ValueString + right.ValueString);
+			break;
+		case OBJECT_BOOL:
+			object.Set((left.ValueInt + right.ValueInt) != 0);
+			break;
+		default:
+			std::cout << "Cannot add to a NULL variable!" << std::endl;
+			return Ty_NULL;
+			break;
+		}
 	}
 	return object;
 }
@@ -185,76 +249,38 @@ TyObject operator-(const TyObject& left, const TyObject& right)
 TyObject operator*(const TyObject& left, const TyObject& right)
 {
 	TyObject object;
-	switch (left.Type)
-	{
-	case OBJECT_INT:
-		object.Set(left.ValueInt * right.ValueInt);
-		break;
-	case OBJECT_UINT:
-		object.Set(left.ValueUInt * right.ValueUInt);
-		break;
-	case OBJECT_FLOAT:
-		object.Set(left.ValueFloat * right.ValueFloat);
-		break;
-	case OBJECT_DOUBLE:
-		object.Set(left.ValueDouble * right.ValueDouble);
-		break;
-	case OBJECT_STRING:
-	{
-		if (right.Type == OBJECT_INT)
-		{
-			for (int i = 0; i < right.ValueInt; i++)
-			{
-				Ty_string_t value = object.ValueString + left.ValueString;
-				object.Set(value);
-			}
-		}
-		else if (right.Type == OBJECT_FLOAT)
-		{
-			for (int i = 0; i < (Ty_int32_t)right.ValueFloat; i++)
-			{
-				Ty_string_t value = object.ValueString + left.ValueString;
-				object.Set(value);
-			}
 
-			float test = right.ValueFloat - (Ty_int32_t)right.ValueFloat;
-			int size = left.ValueString.size() * (right.ValueFloat - (Ty_int32_t)right.ValueFloat);
-			for (int i = 0; i < size; i++)
-			{
-				Ty_string_t value = object.ValueString + left.ValueString[i];
-				object.Set(value);
-			}
-		}
-		else if (right.Type == OBJECT_DOUBLE)
-		{
-			for (int i = 0; i < (Ty_int32_t)right.ValueDouble; i++)
-			{
-				Ty_string_t value = object.ValueString + left.ValueString;
-				object.Set(value);
-			}
-
-			float test = right.ValueDouble - (Ty_int32_t)right.ValueDouble;
-			int size = left.ValueString.size() * (right.ValueDouble - (Ty_int32_t)right.ValueDouble);
-			for (int i = 0; i < size; i++)
-			{
-				Ty_string_t value = object.ValueString + left.ValueString[i];
-				object.Set(value);
-			}
-		}
-		else
-		{
-			std::cout << "Cannot multiply a string by a non-integer or non-floating-point type!" << std::endl;
-			return Ty_NULL;
-		}
+	if (right.Type == ObjectType::OBJECT_STRING)
+	{
+		TyObject::MultiplyString(left, right, &object);
 	}
-		break;
-	case OBJECT_BOOL:
-		object.Set((left.ValueInt * right.ValueInt) != 0);
-		break;
-	default:
-		std::cout << "Cannot multiply a NULL variable!" << std::endl;
-		return Ty_NULL;
-		break;
+	else
+	{
+		switch (left.Type)
+		{
+		case OBJECT_INT:
+			object.Set(left.ValueInt * right.ValueInt);
+			break;
+		case OBJECT_UINT:
+			object.Set(left.ValueUInt * right.ValueUInt);
+			break;
+		case OBJECT_FLOAT:
+			object.Set(left.ValueFloat * right.ValueFloat);
+			break;
+		case OBJECT_DOUBLE:
+			object.Set(left.ValueDouble * right.ValueDouble);
+			break;
+		case OBJECT_STRING:
+			TyObject::MultiplyString(left, right, &object);
+			break;
+		case OBJECT_BOOL:
+			object.Set((left.ValueInt * right.ValueInt) != 0);
+			break;
+		default:
+			std::cout << "Cannot multiply a NULL variable!" << std::endl;
+			return Ty_NULL;
+			break;
+		}
 	}
 	return object;
 }

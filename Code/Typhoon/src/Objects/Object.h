@@ -51,6 +51,8 @@ struct TyObject
 	friend bool operator<(const TyObject& left, const TyObject& right);
 	friend bool operator>=(const TyObject& left, const TyObject& right);
 	friend bool operator<=(const TyObject& left, const TyObject& right);
+
+	static void MultiplyString(const TyObject& left, const TyObject& right, TyObject* out);
 };
 
 extern TyObject _TyObject_Null;
