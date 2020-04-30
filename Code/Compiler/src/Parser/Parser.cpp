@@ -352,6 +352,8 @@ Node Parser::GetRPNNodeFromToken(std::stack<Token>* stack, Token token)
 			{
 				if (TokenToOperatorToken(lexer.GetTokens()[i]).OpType == OperatorType::COMMA)
 					argTokens.push_back({ TokenType::END, "\n" });
+				else if (lexer.GetTokens()[i].Type == TokenType::STRING)
+					argTokens.push_back({ TokenType::STRING, std::regex_replace(lexer.GetTokens()[i].Value, std::regex("\\\\n"), "\n") });
 				else
 					argTokens.push_back(lexer.GetTokens()[i]);
 			}

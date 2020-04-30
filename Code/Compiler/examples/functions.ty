@@ -9,6 +9,9 @@ func exit(var code):
 func print(var msg):
 	syscall(0x0F, msg)
 
+func println(var msg):
+	syscall(0x0F, msg + "\n")
+
 func abs(var value):
 	if value < 0:
 		return value * -1
@@ -22,3 +25,6 @@ func pow(var a, var b):
 		c = c * a
 		b = b - 1
 	return c
+
+func toString(var value):
+	return "" + value

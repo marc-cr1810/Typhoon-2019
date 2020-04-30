@@ -1,5 +1,6 @@
 use functions
 
-var a = (7 + b := 5)
+var a = (7 + b := pow(2, 2))
 
+println(toString(a) + " is a number")
 print("a = " + a + ", b = " + b)
