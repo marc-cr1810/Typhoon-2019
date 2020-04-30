@@ -1,4 +1,5 @@
 use functions
 
-a := (7 + b := 5)
+var a = (7 + b := 5)
+
 print("a = " + a + ", b = " + b)

@@ -48,10 +48,13 @@ private:
 
 	void StoreGlobalVarFromStack(int index)
 	{
-		if (index < m_GlobalVars.size())
-			m_GlobalVars[index] = m_Stack.top();
-		else
-			m_GlobalVars.push_back(m_Stack.top());
+		while (index >= m_GlobalVars.size())
+		{
+			TyObject null = Ty_NULL;
+			m_GlobalVars.push_back(null);
+		}
+
+		m_GlobalVars[index] = m_Stack.top();
 		m_Stack.pop();
 	}
 
@@ -65,10 +68,13 @@ private:
 
 	void StoreLocalVarFromStack(int index)
 	{
-		if (index < m_LocalVars[m_LocalVars.size() - 1].size())
-			m_LocalVars[m_LocalVars.size() - 1][index] = m_Stack.top();
-		else
-			m_LocalVars[m_LocalVars.size() - 1].push_back(m_Stack.top());
+		while (index >= m_LocalVars[m_LocalVars.size() - 1].size())
+		{
+			TyObject null = Ty_NULL;
+			m_LocalVars[m_LocalVars.size() - 1].push_back(null);
+		}
+
+		m_LocalVars[m_LocalVars.size() - 1][index] = m_Stack.top();
 		m_Stack.pop();
 	}
 
@@ -82,10 +88,13 @@ private:
 
 	void StoreArgVarFromStack(int index)
 	{
-		if (index < m_ArgVars[m_ArgVars.size() - 1].size())
-			m_ArgVars[m_ArgVars.size() - 1][index] = m_Stack.top();
-		else
-			m_ArgVars[m_ArgVars.size() - 1].push_back(m_Stack.top());
+		while (index >= m_ArgVars[m_ArgVars.size() - 1].size())
+		{
+			TyObject null = Ty_NULL;
+			m_ArgVars[m_ArgVars.size() - 1].push_back(null);
+		}
+
+		m_ArgVars[m_ArgVars.size() - 1][index] = m_Stack.top();
 		m_Stack.pop();
 	}
 };
