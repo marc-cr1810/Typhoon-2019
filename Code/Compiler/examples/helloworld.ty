@@ -1,5 +1,5 @@
 use system
 
-var a = [ 0 .. 10, 15, 20 .. 30 ]
+var a = [ "hello world" .. 5 ]
 
 print("a is a list containing " + a)

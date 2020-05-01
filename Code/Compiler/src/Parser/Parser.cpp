@@ -431,7 +431,10 @@ Node Parser::GetRPNNodeFromToken(std::stack<Token>* stack, Token token)
 				{
 					if (listTokens.size() == 0)
 						listTokens.push_back({ TokenType::NUMBER, "0" });
-					if (lexer.GetTokens()[i + 1].Type == TokenType::NUMBER)
+					if (lexer.GetTokens()[i + 1].Type != TokenType::NUMBER)
+						std::cout << "Error: Repeat count is not an integer" << std::endl;
+
+					if (listTokens[listTokens.size() - 1].Type == TokenType::NUMBER)
 					{
 						Ty_int32_t start = std::stoi(listTokens[listTokens.size() - 1].Value);
 						Ty_int32_t end = std::stoi(lexer.GetTokens()[i + 1].Value);
@@ -458,7 +461,16 @@ Node Parser::GetRPNNodeFromToken(std::stack<Token>* stack, Token token)
 							}
 						}
 					}
+					else
+					{
+						listTokens.push_back({ TokenType::END, "\n" });
+						Ty_int32_t count = std::stoi(lexer.GetTokens()[i + 1].Value);
+						for (int i = 0; i < count; i++)
+							node.AddChild(ParseTokens(listTokens));
+						listTokens.clear();
+					}
 					i++;
+
 					if (TokenToOperatorToken(lexer.GetTokens()[i + 1]).OpType == OperatorType::COMMA)
 						i++;
 					else if (TokenToOperatorToken(lexer.GetTokens()[i + 1]).OpType != OperatorType::RIGHT_SQUARE_BRACKET)
