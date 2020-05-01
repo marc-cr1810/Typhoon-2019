@@ -21,26 +21,27 @@ const Token TokenTypes[13] = {
 };
 
 // Different operator tokens, uses regex in the value to find the tokens
-const OperatorToken OperatorTokenTypes[19] = {
+const OperatorToken OperatorTokenTypes[20] = {
 	{ TokenType::START, "^\\t*$", OperatorType::UNKNOWN, OperatorCategory::CATEGORY_UNKNOWN },
-	{ TokenType::OPERATOR, "^=$", OperatorType::EQUAL, OperatorCategory::ASSIGNMENT },					// Set
-	{ TokenType::OPERATOR, "^==$", OperatorType::EQUAL_TO, OperatorCategory::EQUALITY },				// Equal to
-	{ TokenType::OPERATOR, "^!=$", OperatorType::NOT_EQUAL_TO, OperatorCategory::EQUALITY },			// Not equal to
-	{ TokenType::OPERATOR, "^\\+$", OperatorType::ADD, OperatorCategory::ADDITIVE },					// Addition
-	{ TokenType::OPERATOR, "^-$", OperatorType::SUBTRACT, OperatorCategory::ADDITIVE },					// Subtraction
-	{ TokenType::OPERATOR, "^\\*$", OperatorType::MULTIPLY, OperatorCategory::MULTIPLICATIVE },			// Multiplication
-	{ TokenType::OPERATOR, "^\\/$", OperatorType::DIVIDE, OperatorCategory::MULTIPLICATIVE },			// Division
-	{ TokenType::OPERATOR, "^>$", OperatorType::GREATER_THAN, OperatorCategory::RELATIONAL },			// Greater than
-	{ TokenType::OPERATOR, "^<$", OperatorType::LESS_THAN, OperatorCategory::RELATIONAL },				// Less than
-	{ TokenType::OPERATOR, "^>=$", OperatorType::GREATER_THAN_EQUAL_TO, OperatorCategory::RELATIONAL },	// Greater than or equal to
-	{ TokenType::OPERATOR, "^<=$", OperatorType::LESS_THAN_EQUAL_TO, OperatorCategory::RELATIONAL },	// Less than or equal to
-	{ TokenType::OPERATOR, "^:=$", OperatorType::ASSIGN, OperatorCategory::ASSIGNMENT_INLINE },			// Right bracket
+	{ TokenType::OPERATOR, "^=$", OperatorType::EQUAL, OperatorCategory::ASSIGNMENT },						// Set
+	{ TokenType::OPERATOR, "^==$", OperatorType::EQUAL_TO, OperatorCategory::EQUALITY },					// Equal to
+	{ TokenType::OPERATOR, "^!=$", OperatorType::NOT_EQUAL_TO, OperatorCategory::EQUALITY },				// Not equal to
+	{ TokenType::OPERATOR, "^\\+$", OperatorType::ADD, OperatorCategory::ADDITIVE },						// Addition
+	{ TokenType::OPERATOR, "^-$", OperatorType::SUBTRACT, OperatorCategory::ADDITIVE },						// Subtraction
+	{ TokenType::OPERATOR, "^\\*$", OperatorType::MULTIPLY, OperatorCategory::MULTIPLICATIVE },				// Multiplication
+	{ TokenType::OPERATOR, "^\\/$", OperatorType::DIVIDE, OperatorCategory::MULTIPLICATIVE },				// Division
+	{ TokenType::OPERATOR, "^>$", OperatorType::GREATER_THAN, OperatorCategory::RELATIONAL },				// Greater than
+	{ TokenType::OPERATOR, "^<$", OperatorType::LESS_THAN, OperatorCategory::RELATIONAL },					// Less than
+	{ TokenType::OPERATOR, "^>=$", OperatorType::GREATER_THAN_EQUAL_TO, OperatorCategory::RELATIONAL },		// Greater than or equal to
+	{ TokenType::OPERATOR, "^<=$", OperatorType::LESS_THAN_EQUAL_TO, OperatorCategory::RELATIONAL },		// Less than or equal to
+	{ TokenType::OPERATOR, "^:=$", OperatorType::ASSIGN, OperatorCategory::ASSIGNMENT_INLINE },				// Right bracket
 	{ TokenType::OPERATOR, "^\\[$", OperatorType::LEFT_SQUARE_BRACKET, OperatorCategory::POSTFIX_SUB },		// Left square bracket
 	{ TokenType::OPERATOR, "^\\]$", OperatorType::RIGHT_SQUARE_BRACKET, OperatorCategory::POSTFIX_SUB },	// Right square bracket
-	{ TokenType::OPERATOR, "^\\($", OperatorType::LEFT_BRACKET, OperatorCategory::POSTFIX },			// Left bracket
-	{ TokenType::OPERATOR, "^\\)$", OperatorType::RIGHT_BRACKET, OperatorCategory::POSTFIX },			// Right bracket
-	{ TokenType::OPERATOR, "^,$", OperatorType::COMMA, OperatorCategory::CATEGORY_UNKNOWN },			// Right bracket
-	{ TokenType::OPERATOR_SPECIAL, "^:$", OperatorType::SEMICOLON, OperatorCategory::CATEGORY_UNKNOWN }	// Semicolon
+	{ TokenType::OPERATOR, "^\\($", OperatorType::LEFT_BRACKET, OperatorCategory::POSTFIX },				// Left bracket
+	{ TokenType::OPERATOR, "^\\)$", OperatorType::RIGHT_BRACKET, OperatorCategory::POSTFIX },				// Right bracket
+	{ TokenType::OPERATOR, "^,$", OperatorType::COMMA, OperatorCategory::CATEGORY_UNKNOWN },				// Comma
+	{ TokenType::OPERATOR, "^\\.\\.$", OperatorType::REPEATER, OperatorCategory::CATEGORY_UNKNOWN },		// Double periods (fullstops) are a repeater (used when creating lists)
+	{ TokenType::OPERATOR_SPECIAL, "^:$", OperatorType::SEMICOLON, OperatorCategory::CATEGORY_UNKNOWN }		// Semicolon
 };
 
 static OperatorToken TokenToOperatorToken(Token token)

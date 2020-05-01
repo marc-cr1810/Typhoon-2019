@@ -427,6 +427,43 @@ Node Parser::GetRPNNodeFromToken(std::stack<Token>* stack, Token token)
 					node.AddChild(ParseTokens(listTokens));
 					listTokens.clear();
 				}
+				else if (TokenToOperatorToken(lexer.GetTokens()[i]).OpType == OperatorType::REPEATER && level == 1)
+				{
+					if (listTokens.size() == 0)
+						listTokens.push_back({ TokenType::NUMBER, "0" });
+					if (lexer.GetTokens()[i + 1].Type == TokenType::NUMBER)
+					{
+						Ty_int32_t start = std::stoi(listTokens[listTokens.size() - 1].Value);
+						Ty_int32_t end = std::stoi(lexer.GetTokens()[i + 1].Value);
+						listTokens.clear();
+
+						if (start < end)
+						{
+							for (int i = start ; i <= end; i++)
+							{
+								listTokens.push_back({ TokenType::NUMBER, std::to_string(i) });
+								listTokens.push_back({ TokenType::END, "\n" });
+								node.AddChild(ParseTokens(listTokens));
+								listTokens.clear();
+							}
+						}
+						else if (start > end)
+						{
+							for (int i = start; i >= end; i--)
+							{
+								listTokens.push_back({ TokenType::NUMBER, std::to_string(i) });
+								listTokens.push_back({ TokenType::END, "\n" });
+								node.AddChild(ParseTokens(listTokens));
+								listTokens.clear();
+							}
+						}
+					}
+					i++;
+					if (TokenToOperatorToken(lexer.GetTokens()[i + 1]).OpType == OperatorType::COMMA)
+						i++;
+					else if (TokenToOperatorToken(lexer.GetTokens()[i + 1]).OpType != OperatorType::RIGHT_SQUARE_BRACKET)
+						std::cout << "Error: Missing \",\" at end of repeat" << std::endl;
+				}
 				else if (lexer.GetTokens()[i].Type == TokenType::STRING)
 					listTokens.push_back({ TokenType::STRING, std::regex_replace(lexer.GetTokens()[i].Value, std::regex("\\\\n"), "\n") });
 				else
@@ -435,8 +472,10 @@ Node Parser::GetRPNNodeFromToken(std::stack<Token>* stack, Token token)
 			i++;
 		}
 		if (listTokens.size() > 0)
+		{
 			listTokens.push_back({ TokenType::END, "\n" });
-		node.AddChild(ParseTokens(listTokens));
+			node.AddChild(ParseTokens(listTokens));
+		}
 	}
 	else if (token.Type == TokenType::GET_ARRAY)
 	{

@@ -43,7 +43,8 @@ enum OperatorType
 	RIGHT_SQUARE_BRACKET,
 	ASSIGN,
 	SEMICOLON,
-	COMMA
+	COMMA,
+	REPEATER
 };
 
 enum OperatorCategory
