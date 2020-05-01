@@ -400,7 +400,7 @@ Node Parser::GetRPNNodeFromToken(std::stack<Token>* stack, Token token)
 			}
 			if (level > 0)
 			{
-				if (TokenToOperatorToken(lexer.GetTokens()[i]).OpType == OperatorType::COMMA)
+				if (TokenToOperatorToken(lexer.GetTokens()[i]).OpType == OperatorType::COMMA && level == 1)
 				{
 					if (listTokens.size() == 0)
 						throw "Empty list item!";
