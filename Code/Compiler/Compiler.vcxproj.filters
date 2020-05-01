@@ -75,4 +75,8 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="examples\helloworld.ty" />
+    <None Include="examples\lib\system.ty" />
+  </ItemGroup>
 </Project>

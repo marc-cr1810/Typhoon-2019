@@ -470,14 +470,53 @@ void VirtualMachine::Run(File file)
 				m_PC += 3;
 			}
 				break;
-			default:
+			case B_NEWARRAY:
+			{
+				TyArray object;
+				m_Stack.push(object);
 				m_PC++;
+			}
+				break;
+			case B_ALOAD:
+			{
+				ThrowError("Array loading not supported!", 0x01);
+				m_PC++;
+			}
+				break;
+			case B_ASTORE:
+			{
+				TyObject object = m_Stack.top();
+				m_Stack.pop();
+				TyObject* arrayObject = &m_Stack.top();
+				if (arrayObject->Type != ObjectType::OBJECT_ARRAY)
+					ThrowError("Cannot add object to non-array object!", 0x02);
+				arrayObject->Add(object);
+				m_PC++;
+			}
+				break;
+			default:
+				ThrowError("Unknown Instruction! Opcode: " + std::to_string(opcode), 0x01);
 				break;
 			}
 		}
 		else
 			m_PC++;
 	}
+}
+
+void VirtualMachine::ThrowError(Ty_string_t msg, int code)
+{
+	TyString message;
+	message.Set("Error: " + msg);
+	m_Stack.push(message);
+	StoreArgVarFromStack(0);
+	Syscall(SYS_CONSOLE_WRITE);
+
+	TyInt errorCode;
+	errorCode.Set(-1);
+	m_Stack.push(errorCode);
+	StoreArgVarFromStack(0);
+	Syscall(SYS_EXIT);
 }
 
 void VirtualMachine::Syscall(SyscallCode code)

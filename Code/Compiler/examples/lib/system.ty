@@ -11,7 +11,7 @@ func print(var msg):
 
 func println(var msg):
 	syscall(0x0F, msg + "\n")
-
+	
 func abs(var value):
 	if value < 0:
 		return value * -1

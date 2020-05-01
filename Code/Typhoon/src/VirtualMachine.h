@@ -20,6 +20,7 @@ private:
 	std::vector<std::vector<TyObject>> m_LocalVars;
 	std::vector<std::vector<TyObject>> m_ArgVars;
 
+	void ThrowError(Ty_string_t msg, int code);
 	void Syscall(SyscallCode code);
 
 	TyObject* GetLocalVar(int index)

@@ -144,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Config.h" />
+    <ClInclude Include="src\Objects\ArrayObject.h" />
     <ClInclude Include="src\Objects\BoolObject.h" />
     <ClInclude Include="src\Objects\DoubleObject.h" />
     <ClInclude Include="src\Objects\FloatObject.h" />

@@ -12,5 +12,6 @@
 #include "Objects/DoubleObject.h"
 #include "Objects/StringObject.h"
 #include "Objects/BoolObject.h"
+#include "Objects/ArrayObject.h"
 
 #endif

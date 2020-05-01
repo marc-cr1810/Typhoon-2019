@@ -11,7 +11,8 @@ enum ObjectType
 	OBJECT_FLOAT,
 	OBJECT_DOUBLE,
 	OBJECT_STRING,
-	OBJECT_BOOL
+	OBJECT_BOOL,
+	OBJECT_ARRAY
 };
 
 struct TyObject
@@ -24,6 +25,7 @@ struct TyObject
 	Ty_double_t ValueDouble = 0.0;
 	Ty_string_t ValueString = "";
 	bool ValueBool = false;
+	std::vector<TyObject> ValueList;
 
 	void Set(Ty_int32_t value);
 	void Set(Ty_uint32_t value);
@@ -31,6 +33,8 @@ struct TyObject
 	void Set(Ty_double_t value);
 	void Set(Ty_string_t value);
 	void Set(bool value);
+
+	void Add(TyObject& object);
 
 	TyObject operator=(const Ty_int32_t& other);
 	TyObject operator=(const Ty_uint32_t& other);
@@ -51,6 +55,8 @@ struct TyObject
 	friend bool operator<(const TyObject& left, const TyObject& right);
 	friend bool operator>=(const TyObject& left, const TyObject& right);
 	friend bool operator<=(const TyObject& left, const TyObject& right);
+
+	static void MultiplyString(const TyObject& left, const TyObject& right, TyObject* out);
 };
 
 extern TyObject _TyObject_Null;

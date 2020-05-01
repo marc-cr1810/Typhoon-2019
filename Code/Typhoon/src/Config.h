@@ -125,7 +125,10 @@ enum Opcode
 	B_CLT,
 	B_CGTEQ,
 	B_CLTEQ,
-	B_SYSCALL
+	B_SYSCALL,
+	B_NEWARRAY,
+	B_ALOAD,
+	B_ASTORE
 };
 
 enum SyscallCode

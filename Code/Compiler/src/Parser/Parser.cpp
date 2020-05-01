@@ -77,17 +77,12 @@ Node Parser::ParseTokens(std::vector<Token> tokens)
 									while (level > 0)
 									{
 										if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::LEFT_BRACKET)
-										{
 											level++;
-										}
 										else if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::RIGHT_BRACKET)
-										{
 											level--;
-										}
+
 										if (level > 0)
-										{
 											funcCall += tokens[i].Value + " ";
-										}
 										i++;
 									}
 									funcCall += ")";
@@ -95,6 +90,25 @@ Node Parser::ParseTokens(std::vector<Token> tokens)
 								}
 								else
 									exprTokens.push_back(tokens[i++]);
+							}
+							else if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::LEFT_SQUARE_BRACKET)
+							{
+								Ty_string_t createArray = "[ ";
+								int level = 1;
+								i++;
+								while (level > 0)
+								{
+									if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::LEFT_SQUARE_BRACKET)
+										level++;
+									else if (TokenToOperatorToken(tokens[i]).OpType == OperatorType::RIGHT_SQUARE_BRACKET)
+										level--;
+
+									if (level > 0)
+										createArray += tokens[i].Value + " ";
+									i++;
+								}
+								createArray += "]";
+								exprTokens.push_back({ TokenType::NEW_ARRAY, createArray });
 							}
 							else
 								exprTokens.push_back(tokens[i++]);
@@ -362,6 +376,48 @@ Node Parser::GetRPNNodeFromToken(std::stack<Token>* stack, Token token)
 		if (argTokens.size() > 0)
 			argTokens.push_back({ TokenType::END, "\n" });
 		node.AddChild(ParseTokens(argTokens));
+	}
+	else if (token.Type == TokenType::NEW_ARRAY)
+	{
+		Lexer lexer;
+		lexer.TokenizeString(token.Value);
+
+		node = NewObjectNode(ObjectType::OBJ_NEW_ARRAY, token.Value);
+
+		std::vector<Token> listTokens;
+
+		int level = 1;
+		int i = 1;
+		while (level > 0)
+		{
+			if (TokenToOperatorToken(lexer.GetTokens()[i]).OpType == OperatorType::LEFT_SQUARE_BRACKET)
+			{
+				level++;
+			}
+			else if (TokenToOperatorToken(lexer.GetTokens()[i]).OpType == OperatorType::RIGHT_SQUARE_BRACKET)
+			{
+				level--;
+			}
+			if (level > 0)
+			{
+				if (TokenToOperatorToken(lexer.GetTokens()[i]).OpType == OperatorType::COMMA)
+				{
+					if (listTokens.size() == 0)
+						throw "Empty list item!";
+					listTokens.push_back({ TokenType::END, "\n" });
+					node.AddChild(ParseTokens(listTokens));
+					listTokens.clear();
+				}
+				else if (lexer.GetTokens()[i].Type == TokenType::STRING)
+					listTokens.push_back({ TokenType::STRING, std::regex_replace(lexer.GetTokens()[i].Value, std::regex("\\\\n"), "\n") });
+				else
+					listTokens.push_back(lexer.GetTokens()[i]);
+			}
+			i++;
+		}
+		if (listTokens.size() > 0)
+			listTokens.push_back({ TokenType::END, "\n" });
+		node.AddChild(ParseTokens(listTokens));
 	}
 	else
 		node = NewObjectNode((ObjectType)token.Type, token.Value);

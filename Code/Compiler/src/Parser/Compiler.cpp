@@ -300,6 +300,16 @@ void Compiler::CompileObject(Node object, int scope)
 			}
 		}
 			break;
+		case ObjectType::OBJ_NEW_ARRAY:
+		{
+			AddInstruction("", Bytecode::B_NEWARRAY);
+			for (int i = 0; i < object.Children.size(); i++)
+			{
+				CompileASTNode(object.Children[i].Children[0], scope);
+				AddInstruction("", Bytecode::B_ASTORE);
+			}
+		}
+			break;
 		}
 	}
 }

@@ -160,6 +160,10 @@
     <ClInclude Include="src\Utils\Converter.h" />
     <ClInclude Include="src\Utils\File.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="examples\lib\system.ty" />
+    <None Include="examples\helloworld.ty" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
