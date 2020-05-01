@@ -24,7 +24,8 @@ enum ObjectType
 	OBJ_STRING = TokenType::STRING,
 	OBJ_BOOL = TokenType::BOOL,
 	OBJ_FUNCTION_CALL = TokenType::FUNCTION_CALL,
-	OBJ_NEW_ARRAY = TokenType::NEW_ARRAY
+	OBJ_NEW_ARRAY = TokenType::NEW_ARRAY,
+	OBJ_GET_ARRAY = TokenType::GET_ARRAY
 };
 
 enum StatementType

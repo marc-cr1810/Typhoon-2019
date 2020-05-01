@@ -479,7 +479,11 @@ void VirtualMachine::Run(File file)
 				break;
 			case B_ALOAD:
 			{
-				ThrowError("Array loading not supported!", 0x01);
+				TyObject index = m_Stack.top();
+				m_Stack.pop();
+				TyObject arrayObject = m_Stack.top();
+				m_Stack.pop();
+				m_Stack.push(arrayObject.ValueList[index.ValueInt]);
 				m_PC++;
 			}
 				break;

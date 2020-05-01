@@ -19,7 +19,8 @@ enum TokenType
 	STATEMENT,
 	DECLARATION,
 	FUNCTION_CALL,
-	NEW_ARRAY
+	NEW_ARRAY,
+	GET_ARRAY
 };
 
 enum OperatorType

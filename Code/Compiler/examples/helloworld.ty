@@ -1,4 +1,6 @@
 use system
 
 var a = [ [ 0, 1, 2, 3, 4 ], 1, 2, 3, 4 ]
-print(a)
+
+println("a is a list containing " + a[0])
+print("at a[0:2], the value is " + a[0][2])
