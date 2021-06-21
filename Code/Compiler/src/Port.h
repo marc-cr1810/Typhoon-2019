@@ -8,6 +8,11 @@
 #include <vector>
 #include <regex>
 
+#ifndef MS_WINDOWS
+    #include <sys/stat.h>
+    #include <cmath>
+#endif
+
 #include "Config.h"
 
 #ifdef MS_WINDOWS

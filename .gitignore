@@ -3,4 +3,12 @@ Code/.vs/
 Code/bin/
 Code/bin-int/
 
+Code/Compiler/bin/
+Code/Compiler/dep/
+Code/Compiler/obj/
+
+Code/Typhoon/bin/
+Code/Typhoon/dep/
+Code/Typhoon/obj/
+
 # Files

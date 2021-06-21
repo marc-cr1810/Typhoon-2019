@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "Buildfile": "makefile",
-        "regex": "cpp"
+        "*.tcc": "cpp",
+        "string": "cpp"
     }
 }
